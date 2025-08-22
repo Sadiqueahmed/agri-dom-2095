@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -26,13 +25,13 @@ interface BudgetItem {
 }
 
 const INITIAL_BUDGET_DATA: BudgetItem[] = [
-  { id: 1, category: 'Intrants', planned: 25000, actual: 22500, color: '#4CAF50' },
-  { id: 2, category: 'Équipement', planned: 30000, actual: 32000, color: '#2196F3' },
-  { id: 3, category: 'Main d\'oeuvre', planned: 40000, actual: 39000, color: '#FFC107' },
-  { id: 4, category: 'Carburant', planned: 12000, actual: 13500, color: '#F44336' },
+  { id: 1, category: 'Inputs', planned: 25000, actual: 22500, color: '#4CAF50' },
+  { id: 2, category: 'Equipment', planned: 30000, actual: 32000, color: '#2196F3' },
+  { id: 3, category: 'Labor', planned: 40000, actual: 39000, color: '#FFC107' },
+  { id: 4, category: 'Fuel', planned: 12000, actual: 13500, color: '#F44336' },
   { id: 5, category: 'Maintenance', planned: 8000, actual: 7200, color: '#9C27B0' },
   { id: 6, category: 'Services', planned: 15000, actual: 14000, color: '#00BCD4' },
-  { id: 7, category: 'Administratif', planned: 10000, actual: 9800, color: '#FF9800' },
+  { id: 7, category: 'Administrative', planned: 10000, actual: 9800, color: '#FF9800' },
 ];
 
 const BudgetPlanning = () => {
@@ -60,7 +59,7 @@ const BudgetPlanning = () => {
   // Handle adding new budget item
   const handleAddBudgetItem = () => {
     if (!newCategory || !newPlanned) {
-      toast.error("Veuillez remplir les champs obligatoires");
+      toast.error("Please fill in the required fields");
       return;
     }
     
@@ -68,7 +67,7 @@ const BudgetPlanning = () => {
     const actual = newActual ? parseFloat(newActual) : 0;
     
     if (isNaN(planned) || (newActual && isNaN(actual))) {
-      toast.error("Les montants doivent être des nombres valides");
+      toast.error("Amounts must be valid numbers");
       return;
     }
     
@@ -85,7 +84,7 @@ const BudgetPlanning = () => {
     };
     
     setBudgetItems([...budgetItems, newItem]);
-    toast.success("Catégorie de budget ajoutée avec succès");
+    toast.success("Budget category added successfully");
     setShowAddDialog(false);
     setNewCategory('');
     setNewPlanned('');
@@ -105,20 +104,20 @@ const BudgetPlanning = () => {
   // Handle removing a budget item
   const handleRemoveItem = (id: number) => {
     setBudgetItems(budgetItems.filter(item => item.id !== id));
-    toast.success("Catégorie de budget supprimée");
+    toast.success("Budget category deleted");
   };
   
   // Handle saving budget
   const handleSaveBudget = () => {
-    toast.success("Budget enregistré avec succès", {
-      description: `Budget ${selectedPeriod} pour ${selectedYear}`
+    toast.success("Budget saved successfully", {
+      description: `${selectedPeriod} budget for ${selectedYear}`
     });
   };
   
   // Handle export budget
   const handleExportBudget = () => {
-    toast.success("Budget exporté", {
-      description: "Le fichier a été téléchargé avec succès"
+    toast.success("Budget exported", {
+      description: "File downloaded successfully"
     });
   };
   
@@ -126,9 +125,9 @@ const BudgetPlanning = () => {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-xl font-bold">Planification Budgétaire</h2>
+          <h2 className="text-xl font-bold">Budget Planning</h2>
           <p className="text-muted-foreground">
-            Gérez et suivez votre budget pour optimiser vos dépenses
+            Manage and track your budget to optimize your expenses
           </p>
         </div>
         
@@ -138,19 +137,19 @@ const BudgetPlanning = () => {
               className={`px-3 py-1 rounded-sm ${selectedPeriod === 'annual' ? 'bg-background shadow-sm' : 'hover:bg-muted/80'}`}
               onClick={() => setSelectedPeriod('annual')}
             >
-              Annuel
+              Annual
             </button>
             <button 
               className={`px-3 py-1 rounded-sm ${selectedPeriod === 'quarterly' ? 'bg-background shadow-sm' : 'hover:bg-muted/80'}`}
               onClick={() => setSelectedPeriod('quarterly')}
             >
-              Trimestriel
+              Quarterly
             </button>
             <button 
               className={`px-3 py-1 rounded-sm ${selectedPeriod === 'monthly' ? 'bg-background shadow-sm' : 'hover:bg-muted/80'}`}
               onClick={() => setSelectedPeriod('monthly')}
             >
-              Mensuel
+              Monthly
             </button>
           </div>
           
@@ -170,17 +169,17 @@ const BudgetPlanning = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Statut du budget</CardTitle>
+            <CardTitle>Budget Status</CardTitle>
             <CardDescription>
               {budgetStatus === 'under' ? 
-                'Vous êtes en dessous du budget prévu' : 
-                'Vous avez dépassé le budget prévu'}
+                'You are under the planned budget' : 
+                'You have exceeded the planned budget'}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Progression</span>
+                <span className="text-sm text-muted-foreground">Progress</span>
                 <span className="text-sm font-medium">{budgetProgress}%</span>
               </div>
               <Progress 
@@ -201,15 +200,15 @@ const BudgetPlanning = () => {
               
               <div className="pt-4 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Budget prévu:</span>
+                  <span className="text-muted-foreground">Planned Budget:</span>
                   <span className="font-medium">{totalPlanned.toLocaleString()} €</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Dépensé:</span>
+                  <span className="text-muted-foreground">Spent:</span>
                   <span className="font-medium">{totalActual.toLocaleString()} €</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t">
-                  <span className="font-medium text-muted-foreground">Solde:</span>
+                  <span className="font-medium text-muted-foreground">Balance:</span>
                   <span 
                     className={`font-medium ${
                       totalPlanned - totalActual >= 0 ? 'text-green-600' : 'text-red-600'
@@ -225,9 +224,9 @@ const BudgetPlanning = () => {
         
         <Card className="md:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle>Répartition des dépenses</CardTitle>
+            <CardTitle>Expense Distribution</CardTitle>
             <CardDescription>
-              Visualisation de la distribution budgétaire
+              Visualization of budget distribution
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -263,14 +262,14 @@ const BudgetPlanning = () => {
       <Card>
         <CardHeader className="flex-row justify-between items-center">
           <div>
-            <CardTitle>Catégories budgétaires</CardTitle>
+            <CardTitle>Budget Categories</CardTitle>
             <CardDescription>
-              Suivi détaillé par catégorie de dépense
+              Detailed tracking by expense category
             </CardDescription>
           </div>
           <Button size="sm" onClick={() => setShowAddDialog(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter
+            Add
           </Button>
         </CardHeader>
         <CardContent>
@@ -278,12 +277,12 @@ const BudgetPlanning = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 px-4 font-medium">Catégorie</th>
-                  <th className="text-right py-3 px-4 font-medium">Budget prévu</th>
-                  <th className="text-right py-3 px-4 font-medium">Dépensé</th>
-                  <th className="text-right py-3 px-4 font-medium">Progression</th>
-                  <th className="text-right py-3 px-4 font-medium">Solde</th>
-                  <th className="text-right py-3 px-4 font-medium">Statut</th>
+                  <th className="text-left py-3 px-4 font-medium">Category</th>
+                  <th className="text-right py-3 px-4 font-medium">Planned Budget</th>
+                  <th className="text-right py-3 px-4 font-medium">Spent</th>
+                  <th className="text-right py-3 px-4 font-medium">Progress</th>
+                  <th className="text-right py-3 px-4 font-medium">Balance</th>
+                  <th className="text-right py-3 px-4 font-medium">Status</th>
                   <th className="py-3 px-4"></th>
                 </tr>
               </thead>
@@ -349,11 +348,11 @@ const BudgetPlanning = () => {
         <CardFooter className="flex justify-between">
           <Button variant="outline" onClick={handleExportBudget}>
             <Download className="h-4 w-4 mr-2" />
-            Exporter
+            Export
           </Button>
           <Button onClick={handleSaveBudget}>
             <Save className="h-4 w-4 mr-2" />
-            Enregistrer
+            Save
           </Button>
         </CardFooter>
       </Card>
@@ -362,21 +361,21 @@ const BudgetPlanning = () => {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ajouter une catégorie budgétaire</DialogTitle>
+            <DialogTitle>Add Budget Category</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Nom de la catégorie</Label>
+              <Label htmlFor="category">Category Name</Label>
               <Input 
                 id="category" 
                 value={newCategory} 
                 onChange={(e) => setNewCategory(e.target.value)} 
-                placeholder="Ex: Équipement"
+                placeholder="Ex: Equipment"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="planned">Budget prévu (€)</Label>
+              <Label htmlFor="planned">Planned Budget (€)</Label>
               <Input 
                 id="planned" 
                 type="number" 
@@ -387,7 +386,7 @@ const BudgetPlanning = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="actual">Dépensé à ce jour (€) (optionnel)</Label>
+              <Label htmlFor="actual">Spent to Date (€) (optional)</Label>
               <Input 
                 id="actual" 
                 type="number" 
@@ -398,8 +397,8 @@ const BudgetPlanning = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowAddDialog(false)}>Annuler</Button>
-            <Button onClick={handleAddBudgetItem}>Ajouter</Button>
+            <Button variant="ghost" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+            <Button onClick={handleAddBudgetItem}>Add</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

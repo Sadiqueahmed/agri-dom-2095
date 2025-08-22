@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TrendingUp, AlertTriangle } from 'lucide-react';
 import { EditableField } from '../ui/editable-field';
@@ -39,7 +38,7 @@ const StatCards: React.FC<StatCardsProps> = ({
       <div className="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
         <div className="flex flex-row items-center justify-between">
           <div>
-            <p className="text-gray-500 font-medium text-sm mb-1">Revenu mensuel</p>
+            <p className="text-gray-500 font-medium text-sm mb-1">Monthly Revenue</p>
             <div className="flex items-baseline">
               <p className="text-3xl font-bold text-gray-800">
                 <EditableField
@@ -66,7 +65,7 @@ const StatCards: React.FC<StatCardsProps> = ({
       <div className="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
         <div className="flex flex-row items-center justify-between">
           <div>
-            <p className="text-gray-500 font-medium text-sm mb-1">Superficie cultivée</p>
+            <p className="text-gray-500 font-medium text-sm mb-1">Cultivated Area</p>
             <div className="flex items-baseline">
               <p className="text-3xl font-bold text-gray-800">
                 <EditableField
@@ -82,7 +81,7 @@ const StatCards: React.FC<StatCardsProps> = ({
                   type="number"
                   onSave={handleParcelsCountChange}
                   className="inline-block"
-                /> parcelles
+                /> plots
               </span>
             </div>
           </div>
@@ -92,7 +91,7 @@ const StatCards: React.FC<StatCardsProps> = ({
       <div className="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
         <div className="flex flex-row items-center justify-between">
           <div>
-            <p className="text-gray-500 font-medium text-sm mb-1">Rendement moyen</p>
+            <p className="text-gray-500 font-medium text-sm mb-1">Average Yield</p>
             <div className="flex items-baseline">
               <p className="text-3xl font-bold text-gray-800">
                 <EditableField
