@@ -1,8 +1,7 @@
-
 import React, { createContext, useContext, ReactNode } from 'react';
 import useCRMContext from '../hooks/use-crm-context';
 
-// Création du contexte avec les types appropriés
+// Creating context with appropriate types
 interface CRMContextType {
   lastSync: Date;
   isRefreshing: boolean;
@@ -18,12 +17,12 @@ interface CRMContextType {
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined);
 
-// Props pour le provider
+// Props for the provider
 interface CRMProviderProps {
   children: ReactNode;
 }
 
-// Provider qui va envelopper notre application
+// Provider that will wrap our application
 export const CRMProvider: React.FC<CRMProviderProps> = ({ children }) => {
   const crmContext = useCRMContext();
   
@@ -34,12 +33,12 @@ export const CRMProvider: React.FC<CRMProviderProps> = ({ children }) => {
   );
 };
 
-// Hook personnalisé pour utiliser le contexte
+// Custom hook to use the context
 export const useCRM = () => {
   const context = useContext(CRMContext);
   
   if (context === undefined) {
-    throw new Error('useCRM doit être utilisé à l\'intérieur d\'un CRMProvider');
+    throw new Error('use CRM must be used within a CRM Provider');
   }
   
   return context;
