@@ -69,7 +69,7 @@ const ParcelFilters = ({
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             type="search"
-            placeholder="Rechercher une parcelle..."
+            placeholder="Search for parcels..."
             className="pl-9 w-full md:w-48"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -80,14 +80,14 @@ const ParcelFilters = ({
       <Select value={filterStatus} onValueChange={setFilterStatus}>
         <SelectTrigger className="w-[180px]">
           <Filter className="h-4 w-4 mr-2" />
-          <SelectValue placeholder="Statut" />
+          <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tous les statuts</SelectItem>
-          <SelectItem value="active">Parcelles actives</SelectItem>
-          <SelectItem value="fallow">En jachère</SelectItem>
-          <SelectItem value="planned">Planifiées</SelectItem>
-          <SelectItem value="rented">Louées</SelectItem>
+          <SelectItem value="all">All Statuses</SelectItem>
+          <SelectItem value="active">Active Parcels</SelectItem>
+          <SelectItem value="fallow">Fallow</SelectItem>
+          <SelectItem value="planned">Planned</SelectItem>
+          <SelectItem value="rented">Rented</SelectItem>
         </SelectContent>
       </Select>
       
@@ -97,83 +97,83 @@ const ParcelFilters = ({
           <SelectValue placeholder="Type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tous les types</SelectItem>
-          <SelectItem value="field">Champs</SelectItem>
-          <SelectItem value="greenhouse">Serres</SelectItem>
-          <SelectItem value="orchard">Vergers</SelectItem>
-          <SelectItem value="experimental">Expérimentales</SelectItem>
+          <SelectItem value="all">All Types</SelectItem>
+          <SelectItem value="field">Fields</SelectItem>
+          <SelectItem value="greenhouse">Greenhouses</SelectItem>
+          <SelectItem value="orchard">Orchards</SelectItem>
+          <SelectItem value="experimental">Experimental</SelectItem>
         </SelectContent>
       </Select>
 
       {dateRange && setDateRange && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="flex gap-2">
-              <Calendar className="h-4 w-4" />
-              {dateRange?.from ? (
-                dateRange.to ? (
-                  <>
-                    {format(dateRange.from, 'dd/MM/yyyy')} - {format(dateRange.to, 'dd/MM/yyyy')}
-                  </>
-                ) : (
-                  format(dateRange.from, 'dd/MM/yyyy')
-                )
-              ) : (
-                "Sélectionner des dates"
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <CalendarComponent
-              initialFocus
-              mode="range"
-              defaultMonth={dateRange?.from}
-              selected={dateRange}
-              onSelect={setDateRange}
-              numberOfMonths={2}
-              locale={fr}
-              className="p-3 pointer-events-auto"
-            />
-          </PopoverContent>
-        </Popover>
-      )}
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline" className="flex gap-2">
+        <Calendar className="h-4 w-4" />
+        {dateRange?.from ? (
+          dateRange.to ? (
+            <>
+              {format(dateRange.from, 'dd/MM/yyyy')} - {format(dateRange.to, 'dd/MM/yyyy')}
+            </>
+          ) : (
+            format(dateRange.from, 'dd/MM/yyyy')
+          )
+        ) : (
+          "Select dates"
+        )}
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-auto p-0" align="start">
+      <CalendarComponent
+        initialFocus
+        mode="range"
+        defaultMonth={dateRange?.from}
+        selected={dateRange}
+        onSelect={setDateRange}
+        numberOfMonths={2}
+        locale={fr}
+        className="p-3 pointer-events-auto"
+      />
+    </PopoverContent>
+  </Popover>
+)}
 
       <Popover open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline">
-            <SlidersHorizontal className="h-4 w-4 mr-2" />
-            Filtres avancés
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <div className="space-y-4">
-            <div>
-              <h4 className="mb-2 font-medium">Superficie (hectares)</h4>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm">{tempAreaRange[0]} ha</span>
-                <span className="text-sm">{tempAreaRange[1]} ha</span>
-              </div>
-              <Slider
-                defaultValue={tempAreaRange}
-                min={0}
-                max={50}
-                step={1}
-                onValueChange={handleAreaRangeChange}
-              />
-            </div>
-            
-            <div className="pt-2 flex justify-end">
-              <Button 
-                type="button" 
-                onClick={applyAdvancedFilters}
-                className="bg-agri-primary hover:bg-agri-primary-dark text-white"
-              >
-                Appliquer les filtres
-              </Button>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">
+      <SlidersHorizontal className="h-4 w-4 mr-2" />
+      Advanced filters
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-80">
+    <div className="space-y-4">
+      <div>
+        <h4 className="mb-2 font-medium">Area (hectares)</h4>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm">{tempAreaRange[0]} ha</span>
+          <span className="text-sm">{tempAreaRange[1]} ha</span>
+        </div>
+        <Slider
+          defaultValue={tempAreaRange}
+          min={0}
+          max={50}
+          step={1}
+          onValueChange={handleAreaRangeChange}
+        />
+      </div>
+      
+      <div className="pt-2 flex justify-end">
+        <Button 
+          type="button" 
+          onClick={applyAdvancedFilters}
+          className="bg-agri-primary hover:bg-agri-primary-dark text-white"
+        >
+          Apply filters
+        </Button>
+      </div>
+    </div>
+  </PopoverContent>
+</Popover>
     </div>
   );
 };

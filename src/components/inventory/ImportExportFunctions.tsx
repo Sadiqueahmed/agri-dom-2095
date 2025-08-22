@@ -65,7 +65,7 @@ export const exportInventoryToCSV = (
     
     // Create filename
     const timestamp = options.addTimestamp ? `_${new Date().toISOString().replace(/[:.]/g, '-')}` : '';
-    const defaultName = `inventaire${timestamp}.csv`;
+    const defaultName = `inventory${timestamp}.csv`;
     const fileName = options.fileName || defaultName;
     
     link.setAttribute('href', url);
@@ -75,14 +75,14 @@ export const exportInventoryToCSV = (
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    toast.success("Données exportées avec succès", {
-      description: `Le fichier ${fileName} a été téléchargé`
+
+    toast.success("Data exported successfully", {
+      description: `The file ${fileName} has been downloaded`
     });
     return true;
   } catch (error) {
     console.error("Export error:", error);
-    toast.error("Erreur lors de l'exportation des données");
+    toast.error("Error exporting data");
     return false;
   }
 };
@@ -110,7 +110,7 @@ export const importInventoryFromCSV = (
         
         // Check if there's data to process
         if (!parsedData || parsedData.length === 0 || !parsedData[0]) {
-          toast.error("Le fichier importé ne contient aucune donnée valide");
+          toast.error("The imported file contains no valid data");
           return;
         }
 
@@ -159,35 +159,35 @@ export const importInventoryFromCSV = (
           });
         
         if (validData.length === 0) {
-          toast.error("Aucune donnée valide n'a été trouvée dans le fichier");
+          toast.error("No valid data found in the file");
           return;
         }
         
         onComplete(validData);
-        toast.success(`${validData.length} articles importés avec succès`, {
-          description: `Importation terminée depuis ${file.name}`
+        toast.success(`${validData.length} articles imported successfully`, {
+          description: `Import completed from ${file.name}`
         });
       },
       error: (error) => {
         console.error("Import error:", error);
-        toast.error("Erreur lors de l'importation des données");
+        toast.error("Error importing data");
       }
     });
     return true;
   } catch (error) {
     console.error("Import error:", error);
-    toast.error("Erreur lors de l'importation des données");
+    toast.error("Error importing data");
     return false;
   }
 };
 
 export const exportInventoryToPDF = (inventoryData: InventoryItem[], fileName?: string) => {
-  toast.info("Préparation du PDF en cours...");
+  toast.info("Preparing PDF...");
   // In a real app, you would use a library like jsPDF, pdfmake, or react-pdf
   // This is a placeholder for the actual PDF generation functionality
   setTimeout(() => {
-    toast.success("PDF généré avec succès", {
-      description: "Le fichier a été téléchargé"
+    toast.success("PDF generated successfully", {
+      description: "The file has been downloaded"
     });
   }, 1500);
   return true;
@@ -197,17 +197,17 @@ export const downloadInventoryTemplate = () => {
   const templateData = [
     {
       id: "1",
-      name: "Nom de l'article",
-      category: "Catégorie",
+      name: "Item Name",
+      category: "Category",
       quantity: "100",
-      unit: "unité",
+      unit: "unit",
       minQuantity: "10",
       price: "0.00",
-      location: "Emplacement",
-      supplier: "Fournisseur",
+      location: "Location",
+      supplier: "Supplier",
       sku: "REF-001",
       expiryDate: "2023-12-31",
-      notes: "Notes additionnelles"
+      notes: "Additional notes"
     }
   ];
   
@@ -223,9 +223,9 @@ export const downloadInventoryTemplate = () => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  
-  toast.success("Modèle d'inventaire téléchargé", {
-    description: "Utilisez ce modèle pour préparer vos données d'importation"
+
+  toast.success("Inventory template downloaded", {
+    description: "Use this template to prepare your import data"
   });
   
   return true;

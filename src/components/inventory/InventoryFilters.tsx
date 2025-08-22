@@ -79,31 +79,31 @@ const InventoryFilters = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <span>Trier</span>
+              <span>Sort</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => toggleSort('name')} className="flex justify-between">
-              <span>Nom</span>
+              <span>Name</span>
               {sortBy === 'name' && (
                 <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>
               )}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => toggleSort('quantity')} className="flex justify-between">
-              <span>Quantité</span>
+              <span>Quantity</span>
               {sortBy === 'quantity' && (
                 <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>
               )}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => toggleSort('price')} className="flex justify-between">
-              <span>Prix</span>
+              <span>Price</span>
               {sortBy === 'price' && (
                 <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>
               )}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => toggleSort('lastUpdated')} className="flex justify-between">
-              <span>Date de mise à jour</span>
+              <span>Update Date</span>
               {sortBy === 'lastUpdated' && (
                 <span>{sortOrder === 'asc' ? '↑' : '↓'}</span>
               )}

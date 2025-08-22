@@ -94,7 +94,7 @@ const ParcelActionButtons = ({
             <div className="p-4 border-b">
               <h4 className="font-semibold flex items-center">
                 <AlertTriangle className="h-4 w-4 mr-2 text-orange-500" />
-                Alertes sur parcelles
+                Plot Alerts
               </h4>
             </div>
             <div className="divide-y max-h-80 overflow-auto">
@@ -112,7 +112,7 @@ const ParcelActionButtons = ({
             </div>
             <div className="p-2 border-t bg-muted/10">
               <Button variant="ghost" size="sm" className="w-full" onClick={() => setWeatherAlertsOpen(false)}>
-                Fermer
+                Close
               </Button>
             </div>
           </PopoverContent>
@@ -135,11 +135,11 @@ const ParcelActionButtons = ({
                 className="bg-white border-gray-200 hover:bg-gray-50"
               >
                 <FileBarChart className="mr-2 h-4 w-4 text-gray-600" />
-                Statistiques
+                Statistics
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Générer des statistiques sur vos parcelles</p>
+              <p>Generate statistics for your plots</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -159,7 +159,7 @@ const ParcelActionButtons = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Gérer les couches de la carte</p>
+              <p>Manage map layers</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -196,7 +196,7 @@ const ParcelActionButtons = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Créer une nouvelle parcelle</p>
+              <p>Create a new plot</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

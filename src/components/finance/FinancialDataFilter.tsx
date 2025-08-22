@@ -94,26 +94,26 @@ const FinancialDataFilter: React.FC<FinancialDataFilterProps> = ({
               <SelectValue placeholder="Période" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes les périodes</SelectItem>
-              <SelectItem value="month">Mois en cours</SelectItem>
-              <SelectItem value="quarter">Trimestre en cours</SelectItem>
-              <SelectItem value="year">Année en cours</SelectItem>
-              <SelectItem value="custom">Période personnalisée</SelectItem>
+              <SelectItem value="all">All periods</SelectItem>
+              <SelectItem value="month">Current month</SelectItem>
+              <SelectItem value="quarter">Current quarter</SelectItem>
+              <SelectItem value="year">Current year</SelectItem>
+              <SelectItem value="custom">Custom period</SelectItem>
             </SelectContent>
           </Select>
         </div>
         
         {categories.length > 0 && setCategoryFilter && (
           <div className="space-y-1">
-            <label className="text-xs font-medium">Catégorie</label>
+            <label className="text-xs font-medium">Categorie</label>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm">
-                <SelectValue placeholder="Catégorie" />
+                <SelectValue placeholder="Categorie" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>
-                    {cat === 'all' ? 'Toutes catégories' : cat}
+                    {cat === 'all' ? 'All categories' : cat}
                   </SelectItem>
                 ))}
               </SelectContent>

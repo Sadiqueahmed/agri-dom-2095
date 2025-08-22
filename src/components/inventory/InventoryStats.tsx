@@ -71,7 +71,7 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
       
       <Card className="bg-white rounded-xl border">
         <CardHeader>
-          <CardTitle>Répartition par catégorie</CardTitle>
+          <CardTitle>Categorie Breakdown </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">

@@ -31,7 +31,7 @@ const ImportExportControls: React.FC<ImportExportControlsProps> = ({
   
   const handleImportConfirm = async () => {
     if (!selectedFile) {
-      console.error("Aucun fichier sélectionné");
+      console.error("No file selected");
       return;
     }
     
