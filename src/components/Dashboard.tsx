@@ -32,35 +32,35 @@ import PageHeader from './layout/PageHeader';
 // Sample data for charts - Adapté pour la Guadeloupe
 const revenueData = [
   { month: 'Jan', revenue: 1500 },
-  { month: 'Fév', revenue: 2200 },
+  { month: 'Feb', revenue: 2200 },
   { month: 'Mar', revenue: 2500 },
-  { month: 'Avr', revenue: 2800 },
-  { month: 'Mai', revenue: 3200 },
-  { month: 'Juin', revenue: 3500 },
-  { month: 'Juil', revenue: 4000 },
+  { month: 'Apr', revenue: 2800 },
+  { month: 'May', revenue: 3200 },
+  { month: 'Jun', revenue: 3500 },
+  { month: 'Jul', revenue: 4000 },
 ];
 
 const productionData = [
-  { name: 'Canne à Sucre', value: 40 },
-  { name: 'Banane', value: 25 },
-  { name: 'Ananas', value: 15 },
-  { name: 'Igname', value: 10 },
-  { name: 'Autre', value: 10 },
+  { name: 'Sugar Cane', value: 40 },
+  { name: 'Banana', value: 25 },
+  { name: 'Pineapple', value: 15 },
+  { name: 'Yam', value: 10 },
+  { name: 'Other', value: 10 },
 ];
 
-// Task list adapté au contexte guadeloupéen
+// Task list adapted to Guadeloupean context
 const initialUpcomingTasks = [
-  { id: 1, title: 'Récolter la canne à sucre', due: 'Aujourd\'hui', priority: 'high' },
-  { id: 2, title: 'Commander des plants de bananier', due: 'Demain', priority: 'medium' },
-  { id: 3, title: 'Maintenance du tracteur', due: '28/08', priority: 'low' },
-  { id: 4, title: 'Irrigation des plantations d\'ananas', due: '30/08', priority: 'medium' },
+  { id: 1, title: 'Harvest sugar cane', due: 'Today', priority: 'high' },
+  { id: 2, title: 'Order banana plants', due: 'Tomorrow', priority: 'medium' },
+  { id: 3, title: 'Tractor maintenance', due: '28/08', priority: 'low' },
+  { id: 4, title: 'Irrigate pineapple plantations', due: '30/08', priority: 'medium' },
 ];
 
-// Alerts pour les agriculteurs en Guadeloupe
+// Alerts for farmers in Guadeloupe
 const initialAlerts = [
-  { id: 1, message: 'Niveau bas de plants de bananier', type: 'warning' },
-  { id: 2, message: 'Risque cyclonique pour la semaine prochaine', type: 'danger' },
-  { id: 3, message: 'Échéance de subvention régionale approche', type: 'info' },
+  { id: 1, message: 'Low stock of banana plants', type: 'warning' },
+  { id: 2, message: 'Cyclone risk for next week', type: 'danger' },
+  { id: 3, message: 'Regional subsidy deadline approaching', type: 'info' },
 ];
 
 // Weather alerts data
@@ -71,25 +71,25 @@ const initialWeatherAlerts = [
     region: 'Toute la Guadeloupe', 
     startDate: '2023-09-10', 
     endDate: '2023-09-12', 
-    severity: 'critique', 
-    description: 'Cyclone tropical de catégorie 2 en approche' 
+    severity: 'critical', 
+    description: 'Category 2 tropical cyclone approaching' 
   },
   { 
     id: 2, 
-    type: 'Pluie', 
+    type: 'Rain', 
     region: 'Basse-Terre', 
     startDate: '2023-09-20', 
     endDate: '2023-09-23', 
-    severity: 'modérée', 
-    description: 'Fortes précipitations attendues' 
+    severity: 'moderate', 
+    description: 'Heavy rainfall expected' 
   }
 ];
 
 const Dashboard = () => {
   // State for editable content
-  const [title, setTitle] = useState('Bonjour, Agriculteur Guadeloupéen');
-  const [description, setDescription] = useState('Voici un aperçu de votre exploitation agricole en Guadeloupe');
-  const [currentMonth, setCurrentMonth] = useState('Août 2023');
+  const [title, setTitle] = useState('Hello, Guadeloupean Farmer');
+  const [description, setDescription] = useState('Here is an overview of your agricultural operation in Guadeloupe');
+  const [currentMonth, setCurrentMonth] = useState('August 2023');
   
   // Stats cards
   const [monthlyRevenue, setMonthlyRevenue] = useState(15450);
@@ -112,7 +112,7 @@ const Dashboard = () => {
     region: '',
     startDate: '',
     endDate: '',
-    severity: 'modérée',
+    severity: 'moderate',
     description: ''
   });
   
@@ -123,48 +123,48 @@ const Dashboard = () => {
   // Handle changes
   const handleTitleChange = (value: string | number) => {
     setTitle(String(value));
-    toast.success('Titre mis à jour');
+    toast.success('Title updated');
   };
   
   const handleDescriptionChange = (value: string | number) => {
     setDescription(String(value));
-    toast.success('Description mise à jour');
+    toast.success('Description updated');
   };
   
   const handleMonthChange = (value: string | number) => {
     setCurrentMonth(String(value));
-    toast.success('Mois mis à jour');
+    toast.success('Month updated');
   };
   
   // Stat card updates
   const handleRevenueChange = (value: string | number) => {
     setMonthlyRevenue(Number(value));
-    toast.success('Revenu mensuel mis à jour');
+    toast.success('Monthly revenue updated');
   };
   
   const handleRevenueGrowthChange = (value: string | number) => {
     setRevenueGrowth(Number(value));
-    toast.success('Croissance du revenu mise à jour');
+    toast.success('Revenue growth updated');
   };
   
   const handleAreaChange = (value: string | number) => {
     setCultivatedArea(Number(value));
-    toast.success('Superficie cultivée mise à jour');
+    toast.success('Cultivated area updated');
   };
   
   const handleParcelsCountChange = (value: string | number) => {
     setParcelsCount(Number(value));
-    toast.success('Nombre de parcelles mis à jour');
+    toast.success('Number of parcels updated');
   };
   
   const handleYieldChange = (value: string | number) => {
     setAverageYield(Number(value));
-    toast.success('Rendement moyen mis à jour');
+    toast.success('Average yield updated');
   };
   
   const handleYieldGrowthChange = (value: string | number) => {
     setYieldGrowth(Number(value));
-    toast.success('Croissance du rendement mise à jour');
+    toast.success('Yield growth updated');
   };
   
   // Task management
@@ -183,12 +183,12 @@ const Dashboard = () => {
       task.id === taskId ? { ...task, title: editedTaskTitle } : task
     ));
     setEditingTask(null);
-    toast.success('Tâche mise à jour');
+    toast.success('Task updated');
   };
   
   const handleDeleteTask = (taskId: number) => {
     setUpcomingTasks(upcomingTasks.filter(task => task.id !== taskId));
-    toast.success('Tâche supprimée');
+    toast.success('Task deleted');
   };
   
   // Alert management
@@ -196,7 +196,7 @@ const Dashboard = () => {
     setAlerts(alerts.map(alert => 
       alert.id === id ? { ...alert, message } : alert
     ));
-    toast.success('Alerte mise à jour');
+    toast.success('Alert updated');
   };
   
   const handleDeleteAlert = (id: number) => {
