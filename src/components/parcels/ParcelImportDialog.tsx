@@ -19,15 +19,15 @@ const ParcelImportDialog = ({ isOpen, onOpenChange, onImportConfirm }: ParcelImp
         <div className="space-y-4">
           <p className="text-muted-foreground">Choose the type of data to import:</p>
           <div className="grid grid-cols-1 gap-2">
-            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('parcellaires')}>
+            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('parcels')}>
               <Map className="h-4 w-4 mr-2" />
               Parcel data (CSV)
             </Button>
-            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('géospatiales')}>
+            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('geospatial')}>
               <Calendar className="h-4 w-4 mr-2" />
               Geospatial data (GeoJSON)
             </Button>
-            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('de cultures')}>
+            <Button variant="outline" className="justify-start" onClick={() => onImportConfirm('crops')}>
               <Filter className="h-4 w-4 mr-2" />
               Crop history (Excel)
             </Button>

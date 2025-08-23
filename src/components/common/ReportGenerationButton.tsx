@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, ChevronDown, FileSpreadsheet, FileBarChart2 } from 'lucide-react';
@@ -44,7 +43,7 @@ const ReportGenerationButton: React.FC<ReportGenerationButtonProps> = ({
     }
   };
 
-  // Déterminer quels formats afficher
+  // Determine which formats to show
   const formats = onlyFormats || ['pdf', 'excel', 'csv'];
 
   const formatIcons = {
@@ -54,9 +53,9 @@ const ReportGenerationButton: React.FC<ReportGenerationButtonProps> = ({
   };
 
   const formatLabels = {
-    pdf: 'Format PDF',
-    excel: 'Format Excel',
-    csv: 'Format CSV'
+    pdf: 'PDF format',
+    excel: 'Excel format',
+    csv: 'CSV format'
   };
 
   // If we have a last generated format and it's in our available formats, put it first
@@ -78,12 +77,12 @@ const ReportGenerationButton: React.FC<ReportGenerationButtonProps> = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Génération...
+              Generating...
             </>
           ) : children || (
             <>
               <FileText className="mr-2 h-4 w-4" />
-              Générer un rapport
+              Generate report
               <ChevronDown className="ml-2 h-4 w-4" />
             </>
           )}
@@ -100,7 +99,7 @@ const ReportGenerationButton: React.FC<ReportGenerationButtonProps> = ({
             {React.createElement(formatIcons[format], { className: "mr-2 h-4 w-4" })}
             <span>{formatLabels[format]}</span>
             {lastGeneratedFormat === format && (
-              <span className="ml-2 text-xs text-muted-foreground">(Récent)</span>
+              <span className="ml-2 text-xs text-muted-foreground">(Recent)</span>
             )}
           </DropdownMenuItem>
         ))}

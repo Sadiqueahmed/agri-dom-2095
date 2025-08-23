@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PageLayout from '../components/layout/PageLayout';
 import PageHeader from '../components/layout/PageHeader';
@@ -12,8 +11,8 @@ const ParcelsDetailsPage = () => {
     handleTitleChange, 
     handleDescriptionChange 
   } = usePageMetadata({
-    defaultTitle: 'Gestion des Parcelles en Guadeloupe',
-    defaultDescription: 'Gérez, surveillez et optimisez vos parcelles agricoles à travers tout l\'archipel'
+    defaultTitle: 'Guadeloupe Parcel Management',
+    defaultDescription: 'Manage, monitor, and optimize your agricultural parcels throughout the archipelago'
   });
 
   return (

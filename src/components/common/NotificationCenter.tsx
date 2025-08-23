@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Bell, BellOff, Check, Trash2, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -90,12 +89,12 @@ const NotificationCenter: React.FC = () => {
             {unreadCount > 0 && (
               <Button variant="ghost" size="sm" onClick={handleMarkAllAsRead}>
                 <Check className="h-4 w-4 mr-1" />
-                Tout marquer lu
+                Mark all as read
               </Button>
             )}
             <Button variant="ghost" size="sm" onClick={handleClearAll}>
               <Trash2 className="h-4 w-4 mr-1" />
-              Effacer tout
+              Clear all
             </Button>
           </div>
         </div>
@@ -104,7 +103,7 @@ const NotificationCenter: React.FC = () => {
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
               <BellOff className="h-8 w-8 mb-2" />
-              <p>Aucune notification</p>
+              <p>No notifications</p>
             </div>
           ) : (
             <div className="divide-y">

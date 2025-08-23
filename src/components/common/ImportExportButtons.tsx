@@ -1,210 +1,149 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Upload, Printer, FileText } from 'lucide-react';
-import { useCRM } from '../../contexts/CRMContext';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import ReportGenerationButton from './ReportGenerationButton';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, Filter, RefreshCw, X } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
+import { DatePickerWithRange } from '@/components/ui/date-range-picker';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-interface ImportExportButtonsProps {
-  moduleName: string;
+interface FinancialDataFilterProps {
+  timeFrame: string;
+  setTimeFrame: (value: string) => void;
+  categoryFilter?: string;
+  setCategoryFilter?: (value: string) => void;
+  categories?: string[];
+  dateRange?: DateRange;
+  setDateRange?: (range: DateRange | undefined) => void;
+  onRefresh?: () => void;
+  onClearFilters?: () => void;
   className?: string;
-  onImportComplete?: () => void;
-  showPrint?: boolean;
-  showTechnicalSheet?: boolean;
-  showReportGeneration?: boolean;
 }
 
-const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
-  moduleName,
-  className = "",
-  onImportComplete,
-  showPrint = true,
-  showTechnicalSheet = false,
-  showReportGeneration = true
+const FinancialDataFilter: React.FC<FinancialDataFilterProps> = ({
+  timeFrame,
+  setTimeFrame,
+  categoryFilter,
+  setCategoryFilter,
+  categories = [],
+  dateRange,
+  setDateRange,
+  onRefresh,
+  onClearFilters,
+  className = ''
 }) => {
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [exportFormat, setExportFormat] = useState<'csv' | 'excel' | 'pdf'>('csv');
+  const isMobile = useIsMobile();
   
-  const { exportModuleData, importModuleData, printModuleData } = useCRM();
-  
-  const handleExportClick = () => {
-    setExportDialogOpen(true);
-  };
-  
-  const handleExportConfirm = async () => {
-    try {
-      await exportModuleData(moduleName, exportFormat);
-    } catch (error) {
-      console.error(`Error exporting ${moduleName}:`, error);
-    }
-    
-    setExportDialogOpen(false);
-  };
-  
-  const handleImportClick = () => {
-    setImportDialogOpen(true);
-  };
-  
-  const handleImportConfirm = async () => {
-    if (!selectedFile) {
-      console.error("Aucun fichier sélectionné");
-      return;
-    }
-    
-    try {
-      const success = await importModuleData(moduleName, selectedFile);
-      
-      if (success && onImportComplete) {
-        onImportComplete();
-      }
-    } catch (error) {
-      console.error(`Error importing ${moduleName}:`, error);
-    }
-    
-    setImportDialogOpen(false);
-    setSelectedFile(null);
-  };
-  
-  const handlePrintClick = async () => {
-    try {
-      await printModuleData(moduleName);
-    } catch (error) {
-      console.error(`Error printing ${moduleName}:`, error);
-    }
-  };
-  
-  const handleTechnicalSheetClick = async () => {
-    try {
-      await exportModuleData('guide_cultures', 'pdf');
-    } catch (error) {
-      console.error("Error generating technical guide:", error);
-    }
-  };
-  
+  // Count active filters
+  const activeFilters = [
+    timeFrame !== 'all' ? 1 : 0,
+    categoryFilter && categoryFilter !== 'all' ? 1 : 0,
+    dateRange?.from ? 1 : 0
+  ].reduce((a, b) => a + b, 0);
+
+  const hasActiveFilters = activeFilters > 0;
+
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
-      {showReportGeneration && (
-        <ReportGenerationButton
-          moduleName={moduleName}
-          className="mr-2"
-        />
-      )}
+    <div className={`p-3 md:p-4 bg-muted/30 rounded-lg ${className}`}>
+      <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 md:gap-4 mb-3 md:mb-4">
+        <h3 className="text-sm md:text-base font-medium flex items-center gap-1 md:gap-2">
+          <Filter className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          Filters
+          {hasActiveFilters && (
+            <Badge variant="secondary" className="ml-1 md:ml-2 text-xs">
+              {activeFilters} active{activeFilters > 1 ? 's' : ''}
+            </Badge>
+          )}
+        </h3>
+        
+        <div className="flex gap-1 md:gap-2">
+          {onRefresh && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onRefresh}
+              className="text-xs h-7 md:h-8"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              {!isMobile && "Refresh"}
+            </Button>
+          )}
+          
+          {hasActiveFilters && onClearFilters && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onClearFilters}
+              className="text-xs text-muted-foreground hover:text-foreground h-7 md:h-8"
+            >
+              <X className="h-3 w-3 mr-1" />
+              {!isMobile && "Clear"}
+            </Button>
+          )}
+        </div>
+      </div>
       
-      <Button
-        variant="outline"
-        className="flex items-center gap-2"
-        onClick={handleExportClick}
-      >
-        <Download className="h-4 w-4 mr-2" />
-        Exporter
-      </Button>
-      
-      <Button
-        variant="outline"
-        className="flex items-center gap-2"
-        onClick={handleImportClick}
-      >
-        <Upload className="h-4 w-4 mr-2" />
-        Importer
-      </Button>
-      
-      {showPrint && (
-        <Button
-          variant="outline"
-          className="flex items-center gap-2"
-          onClick={handlePrintClick}
-        >
-          <Printer className="h-4 w-4 mr-2" />
-          Imprimer
-        </Button>
-      )}
-      
-      {showTechnicalSheet && (
-        <Button
-          variant="outline"
-          className="flex items-center gap-2"
-          onClick={handleTechnicalSheetClick}
-        >
-          <FileText className="h-4 w-4 mr-2" />
-          Guide technique
-        </Button>
-      )}
-      
-      {/* Import Dialog */}
-      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Importer des données</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="file">Fichier CSV</Label>
-              <input 
-                type="file" 
-                id="file" 
-                accept=".csv" 
-                onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
-                className="w-full border border-input bg-background px-3 py-2 text-sm"
-              />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Les données seront importées dans le module {moduleName}. 
-              Assurez-vous que le fichier est au format CSV.
-            </p>
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
+        <div className="space-y-1">
+          <label className="text-xs font-medium">Period</label>
+          <Select value={timeFrame} onValueChange={setTimeFrame}>
+            <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm">
+              <SelectValue placeholder="Period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All periods</SelectItem>
+              <SelectItem value="month">Current month</SelectItem>
+              <SelectItem value="quarter">Current quarter</SelectItem>
+              <SelectItem value="year">Current year</SelectItem>
+              <SelectItem value="custom">Custom period</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        {categories.length > 0 && setCategoryFilter && (
+          <div className="space-y-1">
+            <label className="text-xs font-medium">Category</label>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat === 'all' ? 'All categories' : cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setImportDialogOpen(false)}>Annuler</Button>
-            <Button onClick={handleImportConfirm}>Importer</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Export Dialog */}
-      <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Exporter des données</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>Format d'export</Label>
-              <div className="flex gap-2">
-                <Button 
-                  variant={exportFormat === 'csv' ? 'default' : 'outline'}
-                  onClick={() => setExportFormat('csv')}
-                  className="flex-1"
-                >
-                  CSV
-                </Button>
-                <Button 
-                  variant={exportFormat === 'excel' ? 'default' : 'outline'}
-                  onClick={() => setExportFormat('excel')}
-                  className="flex-1"
-                >
-                  Excel
-                </Button>
-                <Button 
-                  variant={exportFormat === 'pdf' ? 'default' : 'outline'}
-                  onClick={() => setExportFormat('pdf')}
-                  className="flex-1"
-                >
-                  PDF
-                </Button>
-              </div>
-            </div>
+        )}
+        
+        {timeFrame === 'custom' && setDateRange && (
+          <div className="space-y-1 col-span-full md:col-span-1">
+            <label className="text-xs font-medium">Dates</label>
+            <DatePickerWithRange 
+              date={dateRange} 
+              setDate={setDateRange} 
+              className="w-full h-8 md:h-10"
+            />
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setExportDialogOpen(false)}>Annuler</Button>
-            <Button onClick={handleExportConfirm}>Exporter</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        )}
+      </div>
+      
+      {dateRange?.from && dateRange.to && (
+        <div className="mt-2 md:mt-3 text-xs md:text-sm flex items-center">
+          <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
+          <span className="text-muted-foreground">
+            {format(dateRange.from, 'dd/MM/yyyy', { locale: fr })} 
+            {" to "} 
+            {format(dateRange.to, 'dd/MM/yyyy', { locale: fr })}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
 
-export default ImportExportButtons;
+export default FinancialDataFilter;

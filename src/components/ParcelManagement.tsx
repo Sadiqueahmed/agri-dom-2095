@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   MapPin, 
@@ -57,63 +56,63 @@ interface CropHistoryEntry {
 const initialParcelData: ParcelData[] = [
   { 
     id: 1, 
-    name: 'Parcelle Nord', 
+    name: 'North Plot', 
     area: 12.5, 
-    crop: 'Blé', 
+    crop: 'Wheat', 
     status: 'active', 
     lastActivity: '2023-08-15', 
-    soilType: 'Argileux', 
+    soilType: 'Clay', 
     coordinates: { lat: 45.4397, lng: 4.3872 },
     ph: 6.8,
     organicMatter: 3.2
   },
   { 
     id: 2, 
-    name: 'Parcelle Est', 
+    name: 'East Plot', 
     area: 8.3, 
-    crop: 'Maïs', 
+    crop: 'Corn', 
     status: 'active', 
     lastActivity: '2023-08-10', 
-    soilType: 'Limoneux', 
+    soilType: 'Loamy', 
     coordinates: { lat: 45.4412, lng: 4.3901 }
   },
   { 
     id: 3, 
-    name: 'Parcelle Sud', 
+    name: 'South Plot', 
     area: 15.7, 
-    crop: 'Tournesol', 
+    crop: 'Sunflower', 
     status: 'active', 
     lastActivity: '2023-08-05', 
-    soilType: 'Sableux', 
+    soilType: 'Sandy', 
     coordinates: { lat: 45.4380, lng: 4.3855 }
   },
   { 
     id: 4, 
-    name: 'Parcelle Ouest', 
+    name: 'West Plot', 
     area: 10.2, 
-    crop: 'Orge', 
+    crop: 'Barley', 
     status: 'inactive', 
     lastActivity: '2023-07-20', 
-    soilType: 'Argileux-Limoneux', 
+    soilType: 'Clay-Loam', 
     coordinates: { lat: 45.4405, lng: 4.3840 }
   },
   { 
     id: 5, 
-    name: 'Parcelle Centrale', 
+    name: 'Central Plot', 
     area: 6.8, 
-    crop: 'Luzerne', 
+    crop: 'Alfalfa', 
     status: 'planned', 
     lastActivity: '2023-08-01', 
-    soilType: 'Limoneux', 
+    soilType: 'Loamy', 
     coordinates: { lat: 45.4390, lng: 4.3885 }
   },
 ];
 
 // Initial crop history data
 const initialCropHistory: CropHistoryEntry[] = [
-  { year: '2022', crop: 'Maïs', yield: '8.2 t/ha', notes: 'Été sec' },
-  { year: '2021', crop: 'Blé', yield: '7.5 t/ha', notes: '-' },
-  { year: '2020', crop: 'Colza', yield: '3.8 t/ha', notes: 'Problèmes d\'insectes' }
+  { year: '2022', crop: 'Corn', yield: '8.2 t/ha', notes: 'Dry summer' },
+  { year: '2021', crop: 'Wheat', yield: '7.5 t/ha', notes: '-' },
+  { year: '2020', crop: 'Rapeseed', yield: '3.8 t/ha', notes: 'Insect problems' }
 ];
 
 // Component for the visual representation of a parcel
@@ -141,8 +140,8 @@ const ParcelCard = ({
     switch (status) {
       case 'active': return 'Active';
       case 'inactive': return 'Inactive';
-      case 'planned': return 'Planifiée';
-      default: return 'Inconnu';
+      case 'planned': return 'Planned';
+      default: return 'Unknown';
     }
   };
 
@@ -265,7 +264,6 @@ const ParcelManagement = () => {
   const handleSelectParcel = (parcel: ParcelData) => {
     setSelectedParcel(parcel);
     setIsEditing(false);
-    // Set notes from the parcel
     setParcelNotes(parcel.notes || '');
   };
 
@@ -277,7 +275,6 @@ const ParcelManagement = () => {
 
   const handleSaveEdit = () => {
     if (editingParcel) {
-      // Include notes in the update
       const updatedParcel = {
         ...editingParcel,
         notes: parcelNotes
@@ -286,14 +283,13 @@ const ParcelManagement = () => {
       setParcels(parcels.map(p => p.id === updatedParcel.id ? updatedParcel : p));
       setSelectedParcel(updatedParcel);
       setIsEditing(false);
-      toast.success('Parcelle mise à jour');
+      toast.success('Plot updated');
     }
   };
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditingParcel(null);
-    // Reset notes to the original value
     if (selectedParcel) {
       setParcelNotes(selectedParcel.notes || '');
     }
@@ -330,7 +326,7 @@ const ParcelManagement = () => {
     if (selectedParcel?.id === id) {
       setSelectedParcel(null);
     }
-    toast.success('Parcelle supprimée');
+    toast.success('Plot deleted');
   };
 
   const handleAddParcel = () => {
@@ -341,7 +337,7 @@ const ParcelManagement = () => {
     const newId = Math.max(0, ...parcels.map(p => p.id)) + 1;
     const createdParcel: ParcelData = {
       id: newId,
-      name: newParcel.name || `Nouvelle Parcelle ${newId}`,
+      name: newParcel.name || `New Plot ${newId}`,
       area: newParcel.area || 0,
       crop: newParcel.crop || '',
       status: newParcel.status as ParcelData['status'] || 'planned',
@@ -361,7 +357,7 @@ const ParcelManagement = () => {
       coordinates: { lat: 45.4390, lng: 4.3885 }
     });
     setShowAddParcelForm(false);
-    toast.success('Nouvelle parcelle créée');
+    toast.success('New plot created');
   };
 
   const handleNewParcelInputChange = (field: keyof ParcelData, value: string | number) => {
@@ -384,10 +380,10 @@ const ParcelManagement = () => {
 
   // Crop history table columns
   const cropHistoryColumns: Column[] = [
-    { id: 'year', header: 'Année', accessorKey: 'year', isEditable: true, width: '100px' },
-    { id: 'crop', header: 'Culture', accessorKey: 'crop', isEditable: true },
-    { id: 'yield', header: 'Rendement', accessorKey: 'yield', isEditable: true, width: '120px' },
-    { id: 'notes', header: 'Remarques', accessorKey: 'notes', isEditable: true }
+    { id: 'year', header: 'Year', accessorKey: 'year', isEditable: true, width: '100px' },
+    { id: 'crop', header: 'Crop', accessorKey: 'crop', isEditable: true },
+    { id: 'yield', header: 'Yield', accessorKey: 'yield', isEditable: true, width: '120px' },
+    { id: 'notes', header: 'Notes', accessorKey: 'notes', isEditable: true }
   ];
 
   const handleCropHistoryUpdate = (rowIndex: number, columnId: string, value: any) => {
@@ -397,7 +393,7 @@ const ParcelManagement = () => {
       [columnId]: value
     };
     setCropHistory(updatedHistory);
-    toast.success('Historique mis à jour');
+    toast.success('History updated');
   };
 
   const handleAddCropHistory = (newRow: Record<string, any>) => {
@@ -407,14 +403,14 @@ const ParcelManagement = () => {
       yield: newRow.yield || '',
       notes: newRow.notes || ''
     }]);
-    toast.success('Entrée d\'historique ajoutée');
+    toast.success('History entry added');
   };
 
   const handleDeleteCropHistory = (rowIndex: number) => {
     const updatedHistory = [...cropHistory];
     updatedHistory.splice(rowIndex, 1);
     setCropHistory(updatedHistory);
-    toast.success('Entrée d\'historique supprimée');
+    toast.success('History entry deleted');
   };
   
   const handleSort = (field: string) => {
@@ -427,11 +423,11 @@ const ParcelManagement = () => {
   };
   
   const handleBulkExport = () => {
-    toast.success('Export des parcelles au format CSV lancé');
+    toast.success('CSV export of plots started');
   };
   
   const handleBulkImport = () => {
-    toast.success('Import de parcelles depuis CSV lancé');
+    toast.success('CSV import of plots started');
   };
   
   const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -443,7 +439,7 @@ const ParcelManagement = () => {
       {showAddParcelForm && (
         <div className="mb-6 border rounded-xl p-4 bg-white">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Ajouter une nouvelle parcelle</h2>
+            <h2 className="text-lg font-semibold">Add a new plot</h2>
             <button 
               className="p-1.5 hover:bg-gray-100 rounded"
               onClick={() => setShowAddParcelForm(false)}
@@ -456,47 +452,47 @@ const ParcelManagement = () => {
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Nom</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Name</label>
                   <input 
                     type="text" 
                     value={newParcel.name || ''} 
                     onChange={(e) => handleNewParcelInputChange('name', e.target.value)}
                     className="w-full px-3 py-2 border border-input rounded-md"
-                    placeholder="Nom de la parcelle"
+                    placeholder="Plot name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Surface (ha)</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Area (ha)</label>
                   <input 
                     type="number" 
                     value={newParcel.area || ''} 
                     onChange={(e) => handleNewParcelInputChange('area', e.target.value)}
                     className="w-full px-3 py-2 border border-input rounded-md"
-                    placeholder="Surface en hectares"
+                    placeholder="Area in hectares"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Culture</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Crop</label>
                   <input 
                     type="text" 
                     value={newParcel.crop || ''} 
                     onChange={(e) => handleNewParcelInputChange('crop', e.target.value)}
                     className="w-full px-3 py-2 border border-input rounded-md"
-                    placeholder="Culture principale"
+                    placeholder="Main crop"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Type de sol</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Soil type</label>
                   <input 
                     type="text" 
                     value={newParcel.soilType || ''} 
                     onChange={(e) => handleNewParcelInputChange('soilType', e.target.value)}
                     className="w-full px-3 py-2 border border-input rounded-md"
-                    placeholder="Type de sol"
+                    placeholder="Soil type"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Dernière activité</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Last activity</label>
                   <input 
                     type="date" 
                     value={newParcel.lastActivity || ''} 
@@ -505,7 +501,7 @@ const ParcelManagement = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Statut</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
                   <div className="flex space-x-2 mt-1">
                     <button 
                       className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'active' ? 'bg-agri-success text-white' : 'bg-muted'}`}
@@ -517,7 +513,7 @@ const ParcelManagement = () => {
                       className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'planned' ? 'bg-agri-warning text-white' : 'bg-muted'}`}
                       onClick={() => handleNewParcelStatusChange('planned')}
                     >
-                      Planifiée
+                      Planned
                     </button>
                     <button 
                       className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'inactive' ? 'bg-agri-danger text-white' : 'bg-muted'}`}
@@ -530,10 +526,10 @@ const ParcelManagement = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-1">Position sur la carte</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-1">Map position</label>
               <ParcelMap 
                 coordinates={newParcel.coordinates || { lat: 45.4390, lng: 4.3885 }}
-                parcelName={newParcel.name || "Nouvelle parcelle"}
+                parcelName={newParcel.name || "New plot"}
                 isEditing={true}
                 onCoordinatesChange={handleNewParcelCoordinatesChange}
               />
@@ -545,13 +541,13 @@ const ParcelManagement = () => {
               className="mr-2 px-4 py-2 border rounded-lg hover:bg-muted"
               onClick={() => setShowAddParcelForm(false)}
             >
-              Annuler
+              Cancel
             </button>
             <button 
               className="px-4 py-2 bg-agri-primary text-white rounded-lg hover:bg-agri-primary-dark"
               onClick={handleSaveNewParcel}
             >
-              Créer
+              Create
             </button>
           </div>
         </div>
@@ -561,7 +557,7 @@ const ParcelManagement = () => {
         {/* Left Column - Parcel List */}
         <div className="lg:col-span-1 space-y-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium">Liste des parcelles</h2>
+            <h2 className="text-lg font-medium">Plot list</h2>
             
             <div className="flex space-x-2">
               <Button variant="outline" size="sm" onClick={handleBulkExport}>
@@ -580,7 +576,7 @@ const ParcelManagement = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 type="text" 
-                placeholder="Rechercher..." 
+                placeholder="Search..." 
                 className="pl-10 pr-4 py-2 w-full"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -590,13 +586,13 @@ const ParcelManagement = () => {
               <Select value={filter} onValueChange={setFilter}>
                 <SelectTrigger className="w-[120px]">
                   <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Tous" />
+                  <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tous</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="planned">Planifiée</SelectItem>
+                  <SelectItem value="planned">Planned</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -610,7 +606,7 @@ const ParcelManagement = () => {
               className={sortBy === 'name' ? 'bg-muted' : ''}
               onClick={() => handleSort('name')}
             >
-              Nom
+              Name
               {sortBy === 'name' && (
                 <ChevronDown className={`h-4 w-4 ml-1 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
               )}
@@ -621,7 +617,7 @@ const ParcelManagement = () => {
               className={sortBy === 'area' ? 'bg-muted' : ''}
               onClick={() => handleSort('area')}
             >
-              Surface
+              Area
               {sortBy === 'area' && (
                 <ChevronDown className={`h-4 w-4 ml-1 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
               )}
@@ -632,7 +628,7 @@ const ParcelManagement = () => {
               className={sortBy === 'crop' ? 'bg-muted' : ''}
               onClick={() => handleSort('crop')}
             >
-              Culture
+              Crop
               {sortBy === 'crop' && (
                 <ChevronDown className={`h-4 w-4 ml-1 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
               )}
@@ -664,7 +660,7 @@ const ParcelManagement = () => {
             ) : (
               <div className="text-center py-8 px-4 border border-dashed rounded-lg">
                 <AlertCircle className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-muted-foreground">Aucune parcelle trouvée avec ces critères</p>
+                <p className="text-muted-foreground">No plots found with these criteria</p>
               </div>
             )}
           </div>
@@ -674,7 +670,7 @@ const ParcelManagement = () => {
             onClick={handleAddParcel}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter une parcelle
+            Add a plot
           </Button>
         </div>
 
@@ -731,13 +727,13 @@ const ParcelManagement = () => {
                   <div className="border rounded-lg p-4">
                     <h3 className="font-medium mb-3 flex items-center">
                       <Calendar className="h-4 w-4 mr-2" />
-                      Culture actuelle
+                      Current crop
                     </h3>
                     
                     {isEditing ? (
                       <div className="space-y-3">
                         <div>
-                          <label className="text-sm text-muted-foreground">Culture</label>
+                          <label className="text-sm text-muted-foreground">Crop</label>
                           <input 
                             type="text" 
                             value={editingParcel?.crop || ''} 
@@ -746,7 +742,7 @@ const ParcelManagement = () => {
                           />
                         </div>
                         <div>
-                          <label className="text-sm text-muted-foreground">Statut</label>
+                          <label className="text-sm text-muted-foreground">Status</label>
                           <div className="flex space-x-2 mt-1">
                             <button 
                               className={`px-3 py-1.5 text-xs rounded-md ${editingParcel?.status === 'active' ? 'bg-agri-success text-white' : 'bg-muted'}`}
@@ -758,7 +754,7 @@ const ParcelManagement = () => {
                               className={`px-3 py-1.5 text-xs rounded-md ${editingParcel?.status === 'planned' ? 'bg-agri-warning text-white' : 'bg-muted'}`}
                               onClick={() => handleStatusChange('planned')}
                             >
-                              Planifiée
+                              Planned
                             </button>
                             <button 
                               className={`px-3 py-1.5 text-xs rounded-md ${editingParcel?.status === 'inactive' ? 'bg-agri-danger text-white' : 'bg-muted'}`}
@@ -769,7 +765,7 @@ const ParcelManagement = () => {
                           </div>
                         </div>
                         <div>
-                          <label className="text-sm text-muted-foreground">Dernière activité</label>
+                          <label className="text-sm text-muted-foreground">Last activity</label>
                           <input 
                             type="date" 
                             value={editingParcel?.lastActivity || ''} 
@@ -781,7 +777,7 @@ const ParcelManagement = () => {
                     ) : (
                       <div className="bg-agri-primary/10 rounded-lg p-3 text-center">
                         <span className="font-semibold text-agri-primary">{selectedParcel.crop}</span>
-                        <p className="text-sm mt-1">Dernière activité: {new Date(selectedParcel.lastActivity).toLocaleDateString()}</p>
+                        <p className="text-sm mt-1">Last activity: {new Date(selectedParcel.lastActivity).toLocaleDateString()}</p>
                       </div>
                     )}
                   </div>
@@ -789,13 +785,13 @@ const ParcelManagement = () => {
                   <div className="border rounded-lg p-4">
                     <h3 className="font-medium mb-3 flex items-center">
                       <Layers className="h-4 w-4 mr-2" />
-                      Caractéristiques du sol
+                      Soil characteristics
                     </h3>
                     
                     {isEditing ? (
                       <div className="space-y-3">
                         <div>
-                          <label className="text-sm text-muted-foreground">Type de sol</label>
+                          <label className="text-sm text-muted-foreground">Soil type</label>
                           <input 
                             type="text" 
                             value={editingParcel?.soilType || ''} 
@@ -814,7 +810,7 @@ const ParcelManagement = () => {
                           />
                         </div>
                         <div>
-                          <label className="text-sm text-muted-foreground">Matière organique (%)</label>
+                          <label className="text-sm text-muted-foreground">Organic matter (%)</label>
                           <input 
                             type="number" 
                             step="0.1"
@@ -824,7 +820,7 @@ const ParcelManagement = () => {
                           />
                         </div>
                         <div>
-                          <label className="text-sm text-muted-foreground">Surface (ha)</label>
+                          <label className="text-sm text-muted-foreground">Area (ha)</label>
                           <input 
                             type="number" 
                             step="0.1"
@@ -842,14 +838,14 @@ const ParcelManagement = () => {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm">pH:</span>
-                          <span className="text-sm font-medium">{selectedParcel.ph || 'Non spécifié'}</span>
+                          <span className="text-sm font-medium">{selectedParcel.ph || 'Not specified'}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm">Matière organique:</span>
-                          <span className="text-sm font-medium">{selectedParcel.organicMatter ? `${selectedParcel.organicMatter}%` : 'Non spécifié'}</span>
+                          <span className="text-sm">Organic matter:</span>
+                          <span className="text-sm font-medium">{selectedParcel.organicMatter ? `${selectedParcel.organicMatter}%` : 'Not specified'}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm">Surface:</span>
+                          <span className="text-sm">Area:</span>
                           <span className="text-sm font-medium">{selectedParcel.area} ha</span>
                         </div>
                       </div>
@@ -861,7 +857,7 @@ const ParcelManagement = () => {
                     <h3 className="font-medium mb-3">Notes</h3>
                     <textarea
                       className="w-full h-24 px-3 py-2 border border-input rounded-md"
-                      placeholder="Ajouter des notes sur cette parcelle..."
+                      placeholder="Add notes about this plot..."
                       value={parcelNotes}
                       onChange={handleNotesChange}
                       disabled={!isEditing}
@@ -869,7 +865,7 @@ const ParcelManagement = () => {
                   </div>
                   
                   <div className="border rounded-lg p-4 md:col-span-2">
-                    <h3 className="font-medium mb-3">Historique des cultures</h3>
+                    <h3 className="font-medium mb-3">Crop history</h3>
                     <EditableTable
                       data={cropHistory}
                       columns={cropHistoryColumns}
@@ -885,16 +881,16 @@ const ParcelManagement = () => {
           ) : (
             <div className="border rounded-xl bg-muted h-full flex flex-col items-center justify-center p-6">
               <MapPin className="h-12 w-12 text-muted-foreground opacity-50 mb-4" />
-              <h3 className="text-xl font-medium text-foreground mb-2">Sélectionnez une parcelle</h3>
+              <h3 className="text-xl font-medium text-foreground mb-2">Select a plot</h3>
               <p className="text-muted-foreground text-center max-w-md">
-                Cliquez sur une parcelle dans la liste à gauche pour afficher ses détails et accéder à la carte
+                Click on a plot in the list on the left to view its details and access the map
               </p>
               <Button 
                 className="mt-6" 
                 onClick={handleAddParcel}
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Ajouter une nouvelle parcelle
+                Add a new plot
               </Button>
             </div>
           )}

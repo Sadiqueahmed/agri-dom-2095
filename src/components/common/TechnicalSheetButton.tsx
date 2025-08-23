@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, Loader2, Download, Eye, Printer } from 'lucide-react';
@@ -49,25 +48,25 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
   // Format data for the technical sheet
   const formatTechSheetData = () => {
     if (!data || Object.keys(data).length === 0) {
-      console.error("Données insuffisantes pour générer la fiche technique");
+      console.error("Insufficient data to generate the technical sheet");
       return null;
     }
     
     return [{
-      nom: data.name || data.nom || "Non spécifié",
-      nomScientifique: data.scientificName || data.nomScientifique || "Non spécifié",
-      famille: data.family || data.famille || "Non spécifiée",
-      origine: data.origin || data.origine || "Non spécifiée",
-      saisonCulture: data.growingSeason || data.saisonCulture || "Non spécifiée",
-      typeSol: data.soilType || data.typeSol || "Non spécifié",
-      besoinEau: data.waterNeeds || data.besoinEau || "Non spécifié",
-      fertilisation: data.fertilization || data.fertilisation || "Non spécifiée",
-      ravageurs: data.pests || data.ravageurs || "Non spécifiés",
-      maladies: data.diseases || data.maladies || "Non spécifiées",
-      notes: data.notes || "Aucune note",
-      type: data.type || "Non spécifié",
-      periodeRecolte: data.harvestPeriod || data.periodeRecolte || "Non spécifiée",
-      rendementHectare: data.yieldPerHectare || data.rendementHectare || data.currentYield || "Non spécifié"
+      name: data.name || data.nom || "Not specified",
+      scientificName: data.scientificName || data.nomScientifique || "Not specified",
+      family: data.family || data.famille || "Not specified",
+      origin: data.origin || data.origine || "Not specified",
+      growingSeason: data.growingSeason || data.saisonCulture || "Not specified",
+      soilType: data.soilType || data.typeSol || "Not specified",
+      waterNeeds: data.waterNeeds || data.besoinEau || "Not specified",
+      fertilization: data.fertilization || data.fertilisation || "Not specified",
+      pests: data.pests || data.ravageurs || "Not specified",
+      diseases: data.diseases || data.maladies || "Not specified",
+      notes: data.notes || "No notes",
+      type: data.type || "Not specified",
+      harvestPeriod: data.harvestPeriod || data.periodeRecolte || "Not specified",
+      yieldPerHectare: data.yieldPerHectare || data.rendementHectare || data.currentYield || "Not specified"
     }];
   };
   
@@ -78,8 +77,8 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
     setIsGenerating(true);
     
     try {
-      await exportModuleData('fiche_technique', 'pdf', techSheetData);
-      console.log("Fiche technique générée avec succès");
+      await exportModuleData('technical_sheet', 'pdf', techSheetData);
+      console.log("Technical sheet generated successfully");
     } catch (error) {
       console.error("Error generating technical sheet:", error);
     } finally {
@@ -97,68 +96,68 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
     return `
       <div class="technical-sheet">
         <div class="technical-sheet-header text-center mb-8">
-          <h1 class="text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-700'}">${item.nom}</h1>
-          <p class="italic">${item.nomScientifique}</p>
+          <h1 class="text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-700'}">${item.name}</h1>
+          <p class="italic">${item.scientificName}</p>
         </div>
         
         <div class="section mb-6">
-          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">Informations générales</h2>
+          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">General Information</h2>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <span class="font-medium">Famille:</span>
-              ${item.famille}
+              <span class="font-medium">Family:</span>
+              ${item.family}
             </div>
             <div>
-              <span class="font-medium">Origine:</span>
-              ${item.origine}
+              <span class="font-medium">Origin:</span>
+              ${item.origin}
             </div>
             <div>
               <span class="font-medium">Type:</span>
               ${item.type}
             </div>
             <div>
-              <span class="font-medium">Saison de culture:</span>
-              ${item.saisonCulture}
+              <span class="font-medium">Growing season:</span>
+              ${item.growingSeason}
             </div>
           </div>
         </div>
         
         <div class="section mb-6">
-          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">Conditions de culture</h2>
+          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">Growing Conditions</h2>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <span class="font-medium">Type de sol:</span>
-              ${item.typeSol}
+              <span class="font-medium">Soil type:</span>
+              ${item.soilType}
             </div>
             <div>
-              <span class="font-medium">Besoin en eau:</span>
-              ${item.besoinEau}
+              <span class="font-medium">Water needs:</span>
+              ${item.waterNeeds}
             </div>
             <div>
-              <span class="font-medium">Fertilisation:</span>
-              ${item.fertilisation}
+              <span class="font-medium">Fertilization:</span>
+              ${item.fertilization}
             </div>
             <div>
-              <span class="font-medium">Période de récolte:</span>
-              ${item.periodeRecolte}
+              <span class="font-medium">Harvest period:</span>
+              ${item.harvestPeriod}
             </div>
             <div>
-              <span class="font-medium">Rendement par hectare:</span>
-              ${item.rendementHectare}
+              <span class="font-medium">Yield per hectare:</span>
+              ${item.yieldPerHectare}
             </div>
           </div>
         </div>
         
         <div class="section mb-6">
-          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">Problèmes phytosanitaires</h2>
+          <h2 class="text-lg font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-800'} border-b pb-2 mb-4">Pest and Disease Issues</h2>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <span class="font-medium">Ravageurs:</span>
-              ${item.ravageurs}
+              <span class="font-medium">Pests:</span>
+              ${item.pests}
             </div>
             <div>
-              <span class="font-medium">Maladies:</span>
-              ${item.maladies}
+              <span class="font-medium">Diseases:</span>
+              ${item.diseases}
             </div>
           </div>
         </div>
@@ -187,7 +186,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
         <!DOCTYPE html>
         <html>
           <head>
-            <title>Fiche Technique - ${data.name || data.nom || 'Culture'}</title>
+            <title>Technical Sheet - ${data.name || data.nom || 'Crop'}</title>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
@@ -253,7 +252,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
               ${generatePreviewHTML()}
               
               <div class="footer text-center text-sm text-muted-color mt-8">
-                <p>Fiche technique générée le ${new Date().toLocaleDateString(settings.locale)}</p>
+                <p>Technical sheet generated on ${new Date().toLocaleDateString(settings.locale)}</p>
               </div>
             </div>
           </body>
@@ -286,7 +285,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
                   ) : children || (
                     <>
                       <Download className="mr-2 h-4 w-4" />
-                      Télécharger fiche technique
+                      Download technical sheet
                     </>
                   )}
                 </Button>
@@ -294,21 +293,21 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
               <DropdownMenuContent className="bg-white border shadow-lg">
                 <DropdownMenuItem onClick={handleShowPreview} className="cursor-pointer">
                   <Eye className="mr-2 h-4 w-4" />
-                  <span>Aperçu</span>
+                  <span>Preview</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handlePrint} className="cursor-pointer">
                   <Printer className="mr-2 h-4 w-4" />
-                  <span>Imprimer</span>
+                  <span>Print</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={downloadTechnicalSheet} className="cursor-pointer">
                   <Download className="mr-2 h-4 w-4" />
-                  <span>Télécharger PDF</span>
+                  <span>Download PDF</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </TooltipTrigger>
           <TooltipContent className="bg-white border shadow-lg">
-            <p>Générer une fiche technique détaillée</p>
+            <p>Generate a detailed technical sheet</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -316,9 +315,9 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-4xl h-[80vh]">
           <DialogHeader>
-            <DialogTitle>Fiche Technique - {data?.name || data?.nom || 'Culture'}</DialogTitle>
+            <DialogTitle>Technical Sheet - {data?.name || data?.nom || 'Crop'}</DialogTitle>
             <DialogDescription>
-              Aperçu de la fiche technique
+              Technical sheet preview
             </DialogDescription>
           </DialogHeader>
           <div className="flex-grow overflow-auto border rounded-md mt-4 bg-white">
@@ -416,7 +415,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
                       ${previewHTML}
                       
                       <div class="footer">
-                        <p>Fiche technique générée le ${new Date().toLocaleDateString(settings.locale)}</p>
+                        <p>Technical sheet generated on ${new Date().toLocaleDateString(settings.locale)}</p>
                       </div>
                     </div>
                   </body>
@@ -428,11 +427,11 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
           </div>
           <div className="flex justify-end gap-2 mt-4">
             <Button variant="outline" onClick={() => setPreviewOpen(false)}>
-              Fermer
+              Close
             </Button>
             <Button onClick={handlePrint}>
               <Printer className="mr-2 h-4 w-4" />
-              Imprimer
+              Print
             </Button>
           </div>
         </DialogContent>

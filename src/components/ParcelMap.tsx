@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin } from 'lucide-react';
 
@@ -17,23 +16,23 @@ interface ParcelMapProps {
 const ParcelMap = ({ coordinates, parcelName, isEditing, onCoordinatesChange }: ParcelMapProps) => {
   // In a real implementation, this would use a mapping library like Leaflet or Google Maps
   // For now, we'll create a placeholder that simulates a map
-  
+
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isEditing || !onCoordinatesChange) return;
-    
+
     // Calculate relative position based on the click within the map element
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     // Convert to a simulated lat/lng (just for UI purposes)
     // In a real map implementation, you would get actual coordinates
     const newLat = 45.4 + (y / rect.height) * 0.1;
     const newLng = 4.3 + (x / rect.width) * 0.1;
-    
+
     onCoordinatesChange({ lat: parseFloat(newLat.toFixed(4)), lng: parseFloat(newLng.toFixed(4)) });
   };
-  
+
   return (
     <div className="relative w-full h-[300px] bg-gray-100 rounded-lg overflow-hidden">
       {/* This would be replaced with an actual map component */}
@@ -68,7 +67,7 @@ const ParcelMap = ({ coordinates, parcelName, isEditing, onCoordinatesChange }: 
         {/* Instruction for editing mode */}
         {isEditing && (
           <div className="absolute bottom-2 left-0 right-0 text-center bg-white/80 py-1 text-xs">
-            Cliquez sur la carte pour déplacer le marqueur
+            Click on the map to move the marker
           </div>
         )}
         
