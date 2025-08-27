@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Statistics from '../components/Statistics';
-import GuadeloupeHarvestTracking from '../components/GuadeloupeHarvestTracking';
+import IndianHarvestTracking from '../components/IndianHarvestTracking';
 import { ChartConfig } from '../components/ui/chart-config';
 import { EditableTable, Column } from '../components/ui/editable-table';
 import { EditableField } from '../components/ui/editable-field';
@@ -20,7 +20,7 @@ interface PerformanceData {
 
 const StatsPage = () => {
   const [pageTitle, setPageTitle] = useState('Statistics and Analysis');
-  const [pageDescription, setPageDescription] = useState('Visualize and analyze your farm data in Guadeloupe');
+  const [pageDescription, setPageDescription] = useState('Visualize and analyze your farm data in India');
   const [activeView, setActiveView] = useState<'performance' | 'harvest' | 'detailed'>('performance');
   const [lastSyncDate, setLastSyncDate] = useState<Date>(new Date());
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -252,8 +252,8 @@ const StatsPage = () => {
                 className="mb-8"
               >
                 <ChartConfig 
-                  title="Agricultural performance indicators in Guadeloupe"
-                  description="Track your performance against your targets for Guadeloupean crops"
+                          title="Agricultural performance indicators in India"
+        description="Track your performance against your targets for Indian crops"
                   onTitleChange={(title) => {
                     console.log('Chart title has been updated.');
                   }}
@@ -285,7 +285,7 @@ const StatsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <GuadeloupeHarvestTracking />
+                <IndianHarvestTracking />
               </motion.div>
             )}
             

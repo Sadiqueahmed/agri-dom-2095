@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import PageLayout from '../components/layout/PageLayout';
 import Dashboard from '../components/Dashboard';
 import TabContainer, { TabItem } from '../components/layout/TabContainer';
-import GuadeloupeHarvestTracking from '../components/GuadeloupeHarvestTracking';
-import GuadeloupeWeatherAlerts from '../components/GuadeloupeWeatherAlerts';
+import IndianHarvestTracking from '../components/IndianHarvestTracking';
+import IndianWeatherAlerts from '../components/IndianWeatherAlerts';
 import TaskList from '../components/cultures/TaskList';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Download, Filter, RefreshCw, Upload, Printer } from 'lucide-react';
@@ -224,12 +224,12 @@ const Index = () => {
     {
       value: 'harvest',
       label: 'Harvest Tracking',
-      content: <GuadeloupeHarvestTracking />
+              content: <IndianHarvestTracking />
     },
     {
       value: 'weather',
       label: 'Weather Alerts',
-      content: <GuadeloupeWeatherAlerts />
+              content: <IndianWeatherAlerts />
     },
     {
       value: 'tasks',

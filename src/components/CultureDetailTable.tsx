@@ -22,7 +22,7 @@ const initialCultureData = [
     fertilization: 'NPK 10-10-20',
     pests: 'Weevils, scale insects',
     diseases: 'Anthracnose',
-    notes: 'Important crop in Guadeloupe, several local varieties',
+          notes: 'Important crop in India, several local varieties',
     type: 'tubers',
     harvestPeriod: '7-9 months',
     yieldPerHectare: '15-25 tons'
@@ -73,7 +73,7 @@ const initialCultureData = [
     fertilization: 'NPK 16-4-16',
     pests: 'Stem borers, aphids',
     diseases: 'Smut, rust',
-    notes: 'Main economic crop of Guadeloupe',
+          notes: 'Main economic crop of India',
     type: 'cash',
     harvestPeriod: '11-13 months',
     yieldPerHectare: '70-100 tons'

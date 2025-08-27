@@ -103,27 +103,35 @@ const Navbar = () => {
         </div>
 
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`nav-link flex items-center space-x-3 py-3 px-4 rounded-lg transition-colors ${
-                isActive(item.path) 
-                  ? 'bg-agri-primary/10 text-agri-primary font-medium' 
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-foreground'
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-agri-primary' : ''}`} />
-              <span>{item.title}</span>
+          {navItems.map((item, index) => (
+            <div key={item.path}>
+              <Link
+                to={item.path}
+                className={`nav-link flex items-center space-x-3 py-3 px-4 rounded-lg transition-colors ${
+                  isActive(item.path) 
+                    ? 'bg-agri-primary/10 text-agri-primary font-medium' 
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-foreground'
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-agri-primary' : ''}`} />
+                <span>{item.title}</span>
+                
+                {isActive(item.path) && (
+                  <div className="ml-auto flex items-center">
+                    <span className="h-2 w-2 rounded-full bg-agri-primary animate-pulse-slow"></span>
+                    <ChevronRight className="h-4 w-4 text-agri-primary ml-1" />
+                  </div>
+                )}
+              </Link>
               
-              {isActive(item.path) && (
-                <div className="ml-auto flex items-center">
-                  <span className="h-2 w-2 rounded-full bg-agri-primary animate-pulse-slow"></span>
-                  <ChevronRight className="h-4 w-4 text-agri-primary ml-1" />
+              {/* Add visual grouping for Reports under Statistics */}
+              {item.title === 'Statistics' && (
+                <div className="ml-8 mt-1 mb-2">
+                  <div className="h-px bg-border w-full"></div>
                 </div>
               )}
-            </Link>
+            </div>
           ))}
         </nav>
 

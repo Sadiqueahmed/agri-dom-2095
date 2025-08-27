@@ -18,7 +18,7 @@ import {
   Edit
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import GuadeloupeWeatherAlerts from './GuadeloupeWeatherAlerts';
+
 import { EditableField } from './ui/editable-field';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
@@ -28,380 +28,475 @@ import { Label } from './ui/label';
 import { Select } from './ui/select';
 import PageHeader from './layout/PageHeader';
 
-// Sample data for charts - Adapted for Guadeloupe
+// Sample data for charts - Adapted for Indian agriculture
 const revenueData = [
-  { month: 'Jan', revenue: 1500 },
-  { month: 'Feb', revenue: 2200 },
-  { month: 'Mar', revenue: 2500 },
-  { month: 'Apr', revenue: 2800 },
-  { month: 'May', revenue: 3200 },
-  { month: 'Jun', revenue: 3500 },
-  { month: 'Jul', revenue: 4000 },
+  { month: 'Jan', revenue: 45000 },
+  { month: 'Feb', revenue: 52000 },
+  { month: 'Mar', revenue: 58000 },
+  { month: 'Apr', revenue: 62000 },
+  { month: 'May', revenue: 68000 },
+  { month: 'Jun', revenue: 72000 },
+  { month: 'Jul', revenue: 75000 },
 ];
 
 const productionData = [
-  { name: 'Sugar Cane', value: 40 },
-  { name: 'Banana', value: 25 },
-  { name: 'Pineapple', value: 15 },
-  { name: 'Yam', value: 10 },
-  { name: 'Other', value: 10 },
+  { name: 'Rice', value: 35 },
+  { name: 'Wheat', value: 25 },
+  { name: 'Sugarcane', value: 15 },
+  { name: 'Cotton', value: 12 },
+  { name: 'Pulses', value: 13 },
 ];
 
-// Task list adapted to Guadeloupean context
+// Task list adapted to Indian agricultural context
 const initialUpcomingTasks = [
-  { id: 1, title: 'Harvest sugar cane', due: 'Today', priority: 'high' },
-  { id: 2, title: 'Order banana plants', due: 'Tomorrow', priority: 'medium' },
+  { id: 1, title: 'Harvest wheat crop', due: 'Today', priority: 'high' },
+  { id: 2, title: 'Prepare paddy fields for rice', due: 'Tomorrow', priority: 'medium' },
   { id: 3, title: 'Tractor maintenance', due: '28/08', priority: 'low' },
-  { id: 4, title: 'Irrigate pineapple plantations', due: '30/08', priority: 'medium' },
+  { id: 4, title: 'Irrigate sugarcane fields', due: '30/08', priority: 'medium' },
 ];
 
-// Alerts for farmers in Guadeloupe
+// Alerts for farmers in India
 const initialAlerts = [
-  { id: 1, message: 'Low stock of banana plants', type: 'warning' },
-  { id: 2, message: 'Cyclone risk for next week', type: 'danger' },
-  { id: 3, message: 'Regional subsidy deadline approaching', type: 'info' },
+  { id: 1, message: 'Low stock of wheat seeds', type: 'warning' },
+  { id: 2, message: 'Monsoon forecast for next week', type: 'info' },
+  { id: 3, message: 'Government subsidy deadline approaching', type: 'info' },
 ];
 
-// Weather alerts data
+// Weather alerts data - Adapted for Indian regions
 const initialWeatherAlerts = [
   { 
     id: 1, 
-    type: 'Cyclone', 
-    region: 'All Guadeloupe', 
+    type: 'Monsoon', 
+    region: 'Maharashtra', 
     startDate: '2023-09-10', 
     endDate: '2023-09-12', 
-    severity: 'critical', 
-    description: 'Category 2 tropical cyclone approaching' 
+    severity: 'moderate', 
+    description: 'Heavy monsoon rains expected' 
   },
   { 
     id: 2, 
-    type: 'Rain', 
-    region: 'Basse-Terre', 
+    type: 'Drought', 
+    region: 'Rajasthan', 
     startDate: '2023-09-20', 
     endDate: '2023-09-23', 
-    severity: 'moderate', 
-    description: 'Heavy rainfall expected' 
+    severity: 'critical', 
+    description: 'Extended dry spell affecting crops' 
   }
 ];
 
 const Dashboard = () => {
   // State for editable content
-  const [title, setTitle] = useState('Hello, Guadeloupean Farmer');
-  const [description, setDescription] = useState('Here is an overview of your agricultural operation in Guadeloupe');
+  const [title, setTitle] = useState('Hello, Indian Farmer');
+  const [description, setDescription] = useState('Here is an overview of your agricultural operation in India');
   const [currentMonth, setCurrentMonth] = useState('August 2023');
   
   // Stats cards
-  const [monthlyRevenue, setMonthlyRevenue] = useState(15450);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(154500);
   const [revenueGrowth, setRevenueGrowth] = useState(8.5);
   const [cultivatedArea, setCultivatedArea] = useState(35);
   const [parcelsCount, setParcelsCount] = useState(5);
   const [averageYield, setAverageYield] = useState(75);
   const [yieldGrowth, setYieldGrowth] = useState(5.2);
   const [alertsCount, setAlertsCount] = useState(3);
+  const [weatherAlertsCount, setWeatherAlertsCount] = useState(2);
   
-  // Tasks and alerts
+  // Lists
   const [upcomingTasks, setUpcomingTasks] = useState(initialUpcomingTasks);
   const [alerts, setAlerts] = useState(initialAlerts);
   const [weatherAlerts, setWeatherAlerts] = useState(initialWeatherAlerts);
   
-  // New alert dialog
+  // Dialog states
+  const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
   const [showAddAlertDialog, setShowAddAlertDialog] = useState(false);
+  
+  // Form states
+  const [newTask, setNewTask] = useState({ title: '', due: '', priority: 'medium' });
   const [newAlert, setNewAlert] = useState({
-    type: 'Cyclone',
+    type: 'Monsoon',
+    message: '',
+    severity: 'Medium',
     region: '',
     startDate: '',
     endDate: '',
-    severity: 'moderate',
     description: ''
   });
   
-  // Task editing state
+  // Editing states
   const [editingTask, setEditingTask] = useState<number | null>(null);
   const [editedTaskTitle, setEditedTaskTitle] = useState('');
-  
+
+
+
   // Handle changes
   const handleTitleChange = (value: string | number) => {
     setTitle(String(value));
     toast.success('Title updated');
   };
-  
+
   const handleDescriptionChange = (value: string | number) => {
     setDescription(String(value));
     toast.success('Description updated');
   };
-  
-  const handleMonthChange = (value: string | number) => {
-    setCurrentMonth(String(value));
-    toast.success('Month updated');
-  };
-  
-  // Stat card updates
-  const handleRevenueChange = (value: string | number) => {
+
+  const handleMonthlyRevenueChange = (value: string | number) => {
     setMonthlyRevenue(Number(value));
     toast.success('Monthly revenue updated');
   };
-  
-  const handleRevenueGrowthChange = (value: string | number) => {
-    setRevenueGrowth(Number(value));
-    toast.success('Revenue growth updated');
+
+  // Task operations
+  const handleAddTask = () => {
+    if (newTask.title.trim()) {
+      const task = {
+        id: Date.now(),
+        title: newTask.title,
+        due: newTask.due,
+        priority: newTask.priority as 'high' | 'medium' | 'low'
+      };
+      setUpcomingTasks([...upcomingTasks, task]);
+      setNewTask({ title: '', due: '', priority: 'medium' });
+      setShowAddTaskDialog(false);
+      toast.success('Task added successfully');
+    }
   };
-  
-  const handleAreaChange = (value: string | number) => {
-    setCultivatedArea(Number(value));
-    toast.success('Cultivated area updated');
+
+  const handleDeleteTask = (id: number) => {
+    setUpcomingTasks(upcomingTasks.filter(task => task.id !== id));
+    toast.success('Task deleted successfully');
   };
-  
-  const handleParcelsCountChange = (value: string | number) => {
-    setParcelsCount(Number(value));
-    toast.success('Number of parcels updated');
-  };
-  
-  const handleYieldChange = (value: string | number) => {
-    setAverageYield(Number(value));
-    toast.success('Average yield updated');
-  };
-  
-  const handleYieldGrowthChange = (value: string | number) => {
-    setYieldGrowth(Number(value));
-    toast.success('Yield growth updated');
-  };
-  
-  // Task management
-  const handleEditTask = (taskId: number) => {
-    const task = upcomingTasks.find(t => t.id === taskId);
+
+  const handleEditTask = (id: number) => {
+    const task = upcomingTasks.find(t => t.id === id);
     if (task) {
-      setEditingTask(taskId);
+      setEditingTask(id);
       setEditedTaskTitle(task.title);
     }
   };
-  
-  const handleSaveTask = (taskId: number) => {
-    if (editedTaskTitle.trim() === '') return;
-    
-    setUpcomingTasks(upcomingTasks.map(task => 
-      task.id === taskId ? { ...task, title: editedTaskTitle } : task
-    ));
-    setEditingTask(null);
-    toast.success('Task updated');
+
+  const handleSaveTaskEdit = (id: number) => {
+    if (editedTaskTitle.trim()) {
+      setUpcomingTasks(upcomingTasks.map(task => 
+        task.id === id ? { ...task, title: editedTaskTitle } : task
+      ));
+      setEditingTask(null);
+      setEditedTaskTitle('');
+      toast.success('Task updated successfully');
+    }
   };
-  
-  const handleDeleteTask = (taskId: number) => {
-    setUpcomingTasks(upcomingTasks.filter(task => task.id !== taskId));
-    toast.success('Task deleted');
+
+  // Alert operations
+  const handleAddAlert = () => {
+    if (newAlert.message.trim()) {
+      const alert = {
+        id: Date.now(),
+        message: newAlert.message,
+        type: newAlert.type as 'warning' | 'info' | 'error'
+      };
+      setAlerts([...alerts, alert]);
+      setNewAlert({ type: 'Monsoon', message: '', severity: 'Medium', region: '', startDate: '', endDate: '', description: '' });
+      setShowAddAlertDialog(false);
+      toast.success('Alert added successfully');
+    }
   };
-  
-  // Alert management
-  const handleEditAlert = (id: number, message: string) => {
-    setAlerts(alerts.map(alert => 
-      alert.id === id ? { ...alert, message } : alert
-    ));
-    toast.success('Alert updated');
-  };
-  
+
   const handleDeleteAlert = (id: number) => {
     setAlerts(alerts.filter(alert => alert.id !== id));
-    setAlertsCount(prev => prev - 1);
-    toast.success('Alert deleted');
+    toast.success('Alert deleted successfully');
   };
-  
-  // Weather alert management
+
+  // Weather alert operations
+  const handleAddWeatherAlert = () => {
+    if (newAlert.description && newAlert.region) {
+      const alert = {
+        id: Date.now(),
+        type: newAlert.type as 'Monsoon' | 'Drought' | 'Heatwave' | 'Flood' | 'Cyclone',
+        region: newAlert.region,
+        startDate: newAlert.startDate || new Date().toISOString().split('T')[0],
+        endDate: newAlert.endDate || new Date().toISOString().split('T')[0],
+        severity: newAlert.severity as 'low' | 'moderate' | 'critical',
+        description: newAlert.description
+      };
+      setWeatherAlerts([...weatherAlerts, alert]);
+      setNewAlert({
+        type: 'Monsoon',
+        message: '',
+        severity: 'Medium',
+        region: '',
+        startDate: '',
+        endDate: '',
+        description: ''
+      });
+      setShowAddAlertDialog(false);
+      toast.success('Weather alert added successfully');
+    }
+  };
+
   const handleDeleteWeatherAlert = (id: number) => {
     setWeatherAlerts(weatherAlerts.filter(alert => alert.id !== id));
-    toast.success('Weather alert deleted');
+    toast.success('Weather alert deleted successfully');
   };
-  
-  const handleAddWeatherAlert = () => {
-    // Validation
-    if (!newAlert.region || !newAlert.startDate || !newAlert.endDate || !newAlert.description) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-    
-    const newId = Math.max(...weatherAlerts.map(a => a.id), 0) + 1;
-    const alertToAdd = {
-      id: newId,
-      ...newAlert
-    };
-    
-    setWeatherAlerts([...weatherAlerts, alertToAdd]);
-    setShowAddAlertDialog(false);
-    setNewAlert({
-      type: 'Cyclone',
-      region: '',
-      startDate: '',
-      endDate: '',
-      severity: 'moderate',
-      description: ''
-    });
-    
-    toast.success('New weather alert added');
-  };
-  
-  // Add transaction handler (placeholder for future implementation)
-  const handleAddTransaction = () => {
-    toast.info('Redirecting to the finance page');
+
+  const handleFinanceClick = () => {
+    toast.success('Navigating to Finance page...');
     // In a real app, this would navigate to the finance page
   };
-  
+
   return (
     <div className="p-6 space-y-6 animate-enter">
-      <header className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-1">
-            <EditableField
-              value={title}
-              onSave={handleTitleChange}
-              className="inline-block"
-              showEditIcon={true}
-            />
-          </h1>
-          <p className="text-muted-foreground">
-            <EditableField
-              value={description}
-              onSave={handleDescriptionChange}
-              className="inline-block"
-              showEditIcon={true}
-            />
-          </p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <button className="px-4 py-2 text-sm text-agri-primary font-medium bg-agri-primary/10 rounded-lg hover:bg-agri-primary/20 transition-colors">
-            <Calendar className="h-4 w-4 inline mr-2" />
-            <EditableField
-              value={currentMonth}
-              onSave={handleMonthChange}
-              className="inline-block"
-            />
-          </button>
-          <button 
-            className="px-4 py-2 text-sm bg-agri-primary text-white rounded-lg hover:bg-agri-primary-dark transition-colors"
-            onClick={handleAddTransaction}
-          >
-            <Wallet className="h-4 w-4 inline mr-2" />
-            Add a transaction
-          </button>
-        </div>
-      </header>
+      {/* Header */}
+      <PageHeader
+        title={title}
+        description={description}
+        onTitleChange={handleTitleChange}
+        onDescriptionChange={handleDescriptionChange}
+      />
 
-      {/* Quick Stats Row - Adapted to Guadeloupean agriculture */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="stat-card card-hover">
-          <p className="stat-label">Monthly revenue</p>
-          <div className="flex items-baseline justify-between mt-2">
-            <p className="stat-value">
-              <EditableField
-                value={monthlyRevenue}
-                type="number"
-                onSave={handleRevenueChange}
-                className="inline-block font-bold"
-              /> €
-            </p>
-            <span className="text-agri-success text-sm font-medium flex items-center">
-              <TrendingUp className="h-4 w-4 mr-1" /> +
-              <EditableField
-                value={revenueGrowth}
-                type="number"
-                onSave={handleRevenueGrowthChange}
-                className="inline-block"
-              />%
-            </span>
+      {/* Quick Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Monthly Revenue */}
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Monthly Revenue</p>
+              <p className="text-2xl font-bold">₹{monthlyRevenue.toLocaleString()}</p>
+            </div>
+            <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm">
+            <span className="text-green-600">+{revenueGrowth}%</span>
+            <span className="text-muted-foreground ml-1">from last month</span>
           </div>
         </div>
-        
-        <div className="stat-card card-hover">
-          <p className="stat-label">Cultivated area</p>
-          <div className="flex items-baseline justify-between mt-2">
-            <p className="stat-value">
-              <EditableField
-                value={cultivatedArea}
-                type="number"
-                onSave={handleAreaChange}
-                className="inline-block font-bold"
-              /> ha
-            </p>
-            <span className="text-agri-primary text-sm font-medium">
-              <EditableField
-                value={parcelsCount}
-                type="number"
-                onSave={handleParcelsCountChange}
-                className="inline-block"
-              /> parcels
-            </span>
+
+        {/* Cultivated Area */}
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Cultivated Area</p>
+              <p className="text-2xl font-bold">{cultivatedArea} acres</p>
+            </div>
+            <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Sprout className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm">
+            <span className="text-blue-600">+2.5%</span>
+            <span className="text-muted-foreground ml-1">from last year</span>
           </div>
         </div>
-        
-        <div className="stat-card card-hover">
-          <p className="stat-label">Average yield</p>
-          <div className="flex items-baseline justify-between mt-2">
-            <p className="stat-value">
-              <EditableField
-                value={averageYield}
-                type="number"
-                onSave={handleYieldChange}
-                className="inline-block font-bold"
-              /> t/ha
-            </p>
-            <span className="text-agri-success text-sm font-medium flex items-center">
-              <TrendingUp className="h-4 w-4 mr-1" /> +
-              <EditableField
-                value={yieldGrowth}
-                type="number"
-                onSave={handleYieldGrowthChange}
-                className="inline-block"
-              />%
-            </span>
+
+        {/* Average Yield */}
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Average Yield</p>
+              <p className="text-2xl font-bold">{averageYield}%</p>
+            </div>
+            <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm">
+            <span className="text-yellow-600">+{yieldGrowth}%</span>
+            <span className="text-muted-foreground ml-1">from target</span>
           </div>
         </div>
-        
-        <div className="stat-card card-hover">
-          <p className="stat-label">Alerts</p>
-          <div className="flex items-baseline justify-between mt-2">
-            <p className="stat-value">{alertsCount}</p>
-            <span className="text-agri-warning text-sm font-medium flex items-center">
-              <AlertTriangle className="h-4 w-4 mr-1" /> Recent
-            </span>
+
+        {/* Active Alerts */}
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Active Alerts</p>
+              <p className="text-2xl font-bold">{alertsCount}</p>
+            </div>
+            <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-sm">
+            <span className="text-red-600">-1</span>
+            <span className="text-muted-foreground ml-1">from yesterday</span>
           </div>
         </div>
       </div>
 
-      {/* Weather alerts section */}
-      <div className="bg-white rounded-xl border p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Weather Alerts</h2>
-          <Button 
-            onClick={() => setShowAddAlertDialog(true)}
-            className="bg-agri-primary hover:bg-agri-primary-dark"
-          >
-            <Plus size={16} className="mr-2" /> Add alert
-          </Button>
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Chart */}
+        <div className="bg-white rounded-xl border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Revenue Trend</h3>
+            <Button variant="outline" size="sm" onClick={handleFinanceClick}>
+              <ArrowRight className="h-4 w-4 ml-2" />
+              View Details
+            </Button>
+          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={revenueData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis 
+                tickFormatter={(value) => `₹${value.toLocaleString()}`}
+              />
+              <Tooltip 
+                formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                labelStyle={{ color: '#374151' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="revenue" 
+                stroke="#10B981" 
+                fill="#10B981" 
+                fillOpacity={0.3}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
-        <p className="text-muted-foreground mb-6">
-          Track weather alerts impacting agriculture in Guadeloupe
-        </p>
-        
+
+        {/* Production Distribution */}
+        <div className="bg-white rounded-xl border p-6">
+          <h3 className="text-lg font-semibold mb-4">Production Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={productionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar 
+                dataKey="value" 
+                fill="#8D6E63" 
+                radius={[0, 4, 4, 0]} 
+                barSize={20}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+
+
+      {/* Bottom Cards Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Upcoming Tasks */}
+        <div className="bg-white rounded-xl border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Upcoming Tasks</h3>
+            <Button variant="outline" size="sm" onClick={() => setShowAddTaskDialog(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Task
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {upcomingTasks.map((task) => (
+              <div key={task.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-2 h-2 rounded-full ${
+                    task.priority === 'high' ? 'bg-red-500' : 
+                    task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                  }`} />
+                  {editingTask === task.id ? (
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        value={editedTaskTitle}
+                        onChange={(e) => setEditedTaskTitle(e.target.value)}
+                        className="w-48"
+                      />
+                      <Button size="sm" onClick={() => handleSaveTaskEdit(task.id)}>
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className="font-medium">{task.title}</span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-muted-foreground">{task.due}</span>
+                  {editingTask !== task.id && (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={() => handleEditTask(task.id)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleDeleteTask(task.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Alerts */}
+        <div className="bg-white rounded-xl border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Alerts</h3>
+            <Button variant="outline" size="sm" onClick={() => setShowAddAlertDialog(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Alert
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {alerts.map((alert) => (
+              <div key={alert.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-2 h-2 rounded-full ${
+                    alert.type === 'warning' ? 'bg-yellow-500' : 
+                    alert.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                  }`} />
+                  <span>{alert.message}</span>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => handleDeleteAlert(alert.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Weather Alerts Table */}
+      <div className="bg-white rounded-xl border p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Weather Alerts</h3>
+          <p className="text-sm text-muted-foreground">Track weather alerts impacting agriculture across Indian states</p>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted text-xs uppercase">
-              <tr>
-                <th className="px-4 py-3 text-left">Type</th>
-                <th className="px-4 py-3 text-left">Region</th>
-                <th className="px-4 py-3 text-left">Period</th>
-                <th className="px-4 py-3 text-left">Severity</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left py-3 px-4 font-medium">Type</th>
+                <th className="text-left py-3 px-4 font-medium">Region</th>
+                <th className="text-left py-3 px-4 font-medium">Date Range</th>
+                <th className="text-left py-3 px-4 font-medium">Severity</th>
+                <th className="text-left py-3 px-4 font-medium">Description</th>
+                <th className="text-left py-3 px-4 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {weatherAlerts.map(alert => (
-                <tr key={alert.id} className="border-t hover:bg-muted/30">
-                  <td className="px-4 py-3 flex items-center">
+              {weatherAlerts.map((alert) => (
+                <tr key={alert.id} className="border-b">
+                  <td className="px-4 py-3">
                     {alert.type === 'Cyclone' ? (
                       <span className="flex items-center text-red-500">
-                        <AlertTriangle size={16} className="mr-1" /> {alert.type}
+                        <Wind size={16} className="mr-1" /> {alert.type}
                       </span>
-                    ) : alert.type === 'Rain' ? (
+                    ) : alert.type === 'Monsoon' ? (
                       <span className="flex items-center text-blue-500">
                         <CloudRain size={16} className="mr-1" /> {alert.type}
+                      </span>
+                    ) : alert.type === 'Drought' ? (
+                      <span className="flex items-center text-orange-500">
+                        <Sun size={16} className="mr-1" /> {alert.type}
+                      </span>
+                    ) : alert.type === 'Heatwave' ? (
+                      <span className="flex items-center text-red-600">
+                        <Sun size={16} className="mr-1" /> {alert.type}
+                      </span>
+                    ) : alert.type === 'Flood' ? (
+                      <span className="flex items-center text-blue-600">
+                        <Droplet size={16} className="mr-1" /> {alert.type}
                       </span>
                     ) : (
                       <span className="flex items-center">
@@ -487,224 +582,109 @@ const Dashboard = () => {
                       onClick={() => handleDeleteWeatherAlert(alert.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-100"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </td>
                 </tr>
               ))}
-              {weatherAlerts.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-4 text-center text-muted-foreground">
-                    No weather alerts available
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart */}
-        <div className="dashboard-card col-span-full lg:col-span-2 card-hover">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold">Monthly Revenue</h3>
-            <div className="flex space-x-2">
-              <button className="text-xs px-3 py-1.5 bg-muted rounded-md text-foreground">2023</button>
-              <button className="text-xs px-3 py-1.5 text-muted-foreground hover:bg-muted rounded-md">2022</button>
+      {/* Add Task Dialog */}
+      <Dialog open={showAddTaskDialog} onOpenChange={setShowAddTaskDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add a new task</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="taskTitle" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="taskTitle"
+                value={newTask.title}
+                onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="dueDate" className="text-right">
+                Due Date
+              </Label>
+              <Input
+                id="dueDate"
+                type="date"
+                value={newTask.due}
+                onChange={(e) => setNewTask({...newTask, due: e.target.value})}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="priority" className="text-right">
+                Priority
+              </Label>
+              <select
+                id="priority"
+                value={newTask.priority}
+                onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
             </div>
           </div>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={revenueData}
-                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#4CAF50" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `${value} €`} />
-                <Tooltip formatter={(value) => [`${value} €`, 'Revenue']} />
-                <Area 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#4CAF50" 
-                  fillOpacity={1} 
-                  fill="url(#colorRevenue)" 
-                  activeDot={{ r: 8 }} 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddTaskDialog(false)}>Cancel</Button>
+            <Button onClick={handleAddTask}>Add Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-        {/* Production Distribution - Adapted to Guadeloupean crops */}
-        <div className="dashboard-card card-hover">
-          <h3 className="font-semibold mb-4">Crop Distribution</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={productionData}
-                layout="vertical"
-                margin={{ top: 20, right: 30, left: 40, bottom: 5 }}
+      {/* Add Alert Dialog */}
+      <Dialog open={showAddAlertDialog} onOpenChange={setShowAddAlertDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add a new alert</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="alertMessage" className="text-right">
+                Message
+              </Label>
+              <Input
+                id="alertMessage"
+                value={newAlert.message}
+                onChange={(e) => setNewAlert({...newAlert, message: e.target.value})}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="alertType" className="text-right">
+                Type
+              </Label>
+              <select
+                id="alertType"
+                value={newAlert.type}
+                onChange={(e) => setNewAlert({...newAlert, type: e.target.value})}
+                className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                <XAxis type="number" axisLine={false} tickLine={false} />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  width={80} 
-                />
-                <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                <Bar 
-                  dataKey="value" 
-                  fill="#8D6E63" 
-                  radius={[0, 4, 4, 0]} 
-                  barSize={20}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+                <option value="warning">Warning</option>
+                <option value="info">Info</option>
+                <option value="error">Error</option>
+              </select>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom Cards Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Upcoming Tasks - Adapted to Guadeloupean agriculture */}
-        <div className="dashboard-card card-hover">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold">Upcoming Tasks</h3>
-            <button className="text-xs text-agri-primary hover:underline">See all</button>
-          </div>
-          
-          <div className="space-y-3">
-            {upcomingTasks.map((task) => (
-              <div 
-                key={task.id} 
-                className="flex items-center p-2 rounded-lg hover:bg-muted"
-              >
-                <div 
-                  className={`w-2 h-2 rounded-full mr-3 ${
-                    task.priority === 'high' 
-                      ? 'bg-agri-danger' 
-                      : task.priority === 'medium' 
-                        ? 'bg-agri-warning' 
-                        : 'bg-agri-success'
-                  }`}
-                />
-                <div className="flex-1">
-                  {editingTask === task.id ? (
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={editedTaskTitle}
-                        onChange={(e) => setEditedTaskTitle(e.target.value)}
-                        className="border rounded px-2 py-1 text-sm w-full"
-                        autoFocus
-                      />
-                      <button 
-                        onClick={() => handleSaveTask(task.id)}
-                        className="ml-2 p-1 text-green-600 hover:bg-green-50 rounded"
-                      >
-                        <Check className="h-4 w-4" />
-                      </button>
-                      <button 
-                        onClick={() => setEditingTask(null)}
-                        className="ml-1 p-1 text-red-600 hover:bg-red-50 rounded"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-sm font-medium">{task.title}</p>
-                      <p className="text-xs text-muted-foreground">Due: {task.due}</p>
-                    </>
-                  )}
-                </div>
-                <div className="flex">
-                  {editingTask !== task.id && (
-                    <>
-                      <button 
-                        className="p-1.5 hover:bg-muted rounded" 
-                        onClick={() => handleEditTask(task.id)}
-                      >
-                        <Edit className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <button 
-                        className="p-1.5 hover:bg-muted rounded text-red-500" 
-                        onClick={() => handleDeleteTask(task.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-            {upcomingTasks.length === 0 && (
-              <p className="text-center text-muted-foreground py-4">No upcoming tasks</p>
-            )}
-          </div>
-        </div>
-        
-        {/* Alerts - Adapted to agriculture in Guadeloupe */}
-        <div className="dashboard-card card-hover">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold">Alerts</h3>
-            <button className="text-xs text-agri-primary hover:underline">Manage alerts</button>
-          </div>
-          
-          <div className="space-y-3">
-            {alerts.map((alert) => (
-              <div 
-                key={alert.id} 
-                className={`p-3 rounded-lg ${
-                  alert.type === 'danger' 
-                    ? 'bg-agri-danger/10 border-l-4 border-agri-danger' 
-                    : alert.type === 'warning' 
-                      ? 'bg-agri-warning/10 border-l-4 border-agri-warning' 
-                      : 'bg-agri-info/10 border-l-4 border-agri-info'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start flex-1">
-                    <AlertTriangle className={`h-5 w-5 mr-2 ${
-                      alert.type === 'danger' 
-                        ? 'text-agri-danger' 
-                        : alert.type === 'warning' 
-                          ? 'text-agri-warning' 
-                          : 'text-agri-info'
-                    }`} />
-                    <EditableField 
-                      value={alert.message} 
-                      onSave={(value) => handleEditAlert(alert.id, String(value))}
-                      className="text-sm"
-                    />
-                  </div>
-                  <button 
-                    onClick={() => handleDeleteAlert(alert.id)}
-                    className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
-            {alerts.length === 0 && (
-              <p className="text-center text-muted-foreground py-4">No active alerts</p>
-            )}
-          </div>
-        </div>
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddAlertDialog(false)}>Cancel</Button>
+            <Button onClick={handleAddAlert}>Add Alert</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Add Weather Alert Dialog */}
       <Dialog open={showAddAlertDialog} onOpenChange={setShowAddAlertDialog}>
@@ -723,10 +703,11 @@ const Dashboard = () => {
                 onChange={(e) => setNewAlert({...newAlert, type: e.target.value})}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <option value="Cyclone">Cyclone</option>
-                <option value="Rain">Rain</option>
+                <option value="Monsoon">Monsoon</option>
                 <option value="Drought">Drought</option>
-                <option value="Wind">Wind</option>
+                <option value="Heatwave">Heatwave</option>
+                <option value="Flood">Flood</option>
+                <option value="Cyclone">Cyclone</option>
               </select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -797,6 +778,8 @@ const Dashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+
     </div>
   );
 };

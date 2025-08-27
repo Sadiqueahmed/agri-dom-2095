@@ -162,7 +162,7 @@ const IndianParcelManagement = () => {
     }
   ]);
 
-  const columns: Column<Plot>[] = [
+  const columns: Column[] = [
     {
       key: 'name',
       header: 'Plot Name',

@@ -9,7 +9,7 @@ import ParcelFilters from '../components/parcels/ParcelFilters';
 import ParcelActionButtons from '../components/parcels/ParcelActionButtons';
 import ParcelMapDialog from '../components/parcels/ParcelMapDialog';
 import ParcelImportDialog from '../components/parcels/ParcelImportDialog';
-import GuadeloupeParcelManagement from '../components/GuadeloupeParcelManagement';
+import IndianParcelManagement from '../components/IndianParcelManagement';
 import { useCRM } from '../contexts/CRMContext';
 import { FileSpreadsheet, FileBarChart2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -33,7 +33,7 @@ const ParcelsPage = () => {
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [layersDialogOpen, setLayersDialogOpen] = useState(false);
   const [weatherAlertsOpen, setWeatherAlertsOpen] = useState(false);
-  const [showGuadeloupeView, setShowGuadeloupeView] = useState(true);
+  const [showIndianView, setShowIndianView] = useState(true);
   const [lastSyncDate, setLastSyncDate] = useState<Date>(new Date());
   const { syncDataAcrossCRM } = useCRM();
   const [areaRange, setAreaRange] = useState<[number, number]>([0, 50]);
@@ -103,8 +103,8 @@ const ParcelsPage = () => {
   };
 
   const toggleView = () => {
-    setShowGuadeloupeView(!showGuadeloupeView);
-    console.log(`${showGuadeloupeView ? 'Standard' : 'Guadeloupe'} view enabled`);
+    setShowIndianView(!showIndianView);
+    console.log(`${showIndianView ? 'Standard' : 'Indian'} view enabled`);
     console.log("Displayed data in Crop and Finance modules has been adapted");
   };
 
@@ -170,7 +170,7 @@ const ParcelsPage = () => {
               className="inline-flex items-center px-4 py-2 border border-input bg-white rounded-lg hover:bg-muted/30 transition-colors"
               onClick={toggleView}
             >
-              {showGuadeloupeView ? 'Standard View' : 'Guadeloupe View'}
+              {showIndianView ? 'Standard View' : 'Indian View'}
             </button>
           </div>
         </div>
@@ -205,8 +205,8 @@ const ParcelsPage = () => {
           </div>
         </motion.div>
 
-        {showGuadeloupeView ? (
-          <GuadeloupeParcelManagement />
+        {showIndianView ? (
+          <IndianParcelManagement />
         ) : (
           <ParcelManagement />
         )}

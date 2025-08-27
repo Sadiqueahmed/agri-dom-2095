@@ -1,7 +1,7 @@
 import React from 'react';
 import PageLayout from '../components/layout/PageLayout';
 import PageHeader from '../components/layout/PageHeader';
-import GuadeloupeParcelDetail from '../components/GuadeloupeParcelDetail';
+import IndianParcelDetail from '../components/IndianParcelDetail';
 import usePageMetadata from '../hooks/use-page-metadata';
 
 const ParcelsDetailsPage = () => {
@@ -11,8 +11,8 @@ const ParcelsDetailsPage = () => {
     handleTitleChange, 
     handleDescriptionChange 
   } = usePageMetadata({
-    defaultTitle: 'Guadeloupe Parcel Management',
-    defaultDescription: 'Manage, monitor, and optimize your agricultural parcels throughout the archipelago'
+    defaultTitle: 'Indian Parcel Management',
+    defaultDescription: 'Manage, monitor, and optimize your agricultural parcels across Indian states'
   });
 
   return (
@@ -25,7 +25,7 @@ const ParcelsDetailsPage = () => {
           onDescriptionChange={handleDescriptionChange}
         />
 
-        <GuadeloupeParcelDetail />
+        <IndianParcelDetail />
       </div>
     </PageLayout>
   );

@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 type CropStatus = 'growing' | 'harvested' | 'planned';
 type TaskPriority = 'high' | 'medium' | 'low';
 
-// Mock data for crop planning - Adapted for Guadeloupe agriculture
+// Mock data for crop planning - Adapted for Indian agriculture
 const initialCropsData = [
   { 
     id: 1, 
@@ -76,7 +76,7 @@ const initialCropsData = [
   }
 ];
 
-// Tasks related to crops - Adapted to the Guadeloupe context
+// Tasks related to crops - Adapted to the Indian context
 const initialCropTasks = [
   { id: 1, cropId: 1, title: 'Sugarcane fertilization', date: '2023-09-25', completed: false, priority: 'high' as TaskPriority },
   { id: 2, cropId: 2, title: 'Treatment against cercosporiosis', date: '2023-09-28', completed: false, priority: 'medium' as TaskPriority },
@@ -85,7 +85,7 @@ const initialCropTasks = [
   { id: 5, cropId: 1, title: 'Sugarcane cutting preparation', date: '2024-01-10', completed: false, priority: 'high' as TaskPriority }
 ];
 
-// Monthly calendar view mock data - Adapted for Guadeloupe agriculture
+// Monthly calendar view mock data - Adapted for Indian agriculture
 const monthlyEvents = [
   { date: '2023-09-25', events: [{ id: 1, title: 'Sugarcane fertilization', crop: 'Sugarcane', priority: 'high' }] },
   { date: '2023-09-28', events: [{ id: 2, title: 'Treatment against cercosporiosis', crop: 'Banana', priority: 'medium' }] },
@@ -396,7 +396,7 @@ const CropPlanning = () => {
     <div className="p-6 animate-enter">
       <header className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-1">Guadeloupe Crop Planning</h1>
+          <h1 className="text-2xl font-bold mb-1">Indian Crop Planning</h1>
           <p className="text-muted-foreground">Manage local crops and plan your agricultural activities</p>
         </div>
         <div className="flex space-x-2">

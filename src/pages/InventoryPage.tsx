@@ -3,9 +3,9 @@ import PageLayout from '../components/layout/PageLayout';
 import PageHeader from '../components/layout/PageHeader';
 import TabContainer, { TabItem } from '../components/layout/TabContainer';
 import Inventory from '../components/Inventory';
-import GuadeloupeSpecificCrops from '../components/GuadeloupeSpecificCrops';
-import GuadeloupeHarvestTracking from '../components/GuadeloupeHarvestTracking';
-import GuadeloupeWeatherAlerts from '../components/GuadeloupeWeatherAlerts';
+import IndianSpecificCrops from '../components/IndianSpecificCrops';
+import IndianHarvestTracking from '../components/IndianHarvestTracking';
+import IndianWeatherAlerts from '../components/IndianWeatherAlerts';
 import { Button } from '../components/ui/button';
 import { Download, Plus, Upload, FileUp, FileDown, BarChart2, Calendar, Package } from 'lucide-react';
 import { DatePickerWithRange } from '../components/ui/date-range-picker';
@@ -38,7 +38,7 @@ const InventoryPage = () => {
     handleDescriptionChange 
   } = usePageMetadata({
     defaultTitle: 'Stock and Harvest Management',
-    defaultDescription: 'Manage your inventory and track stock levels of your Guadeloupean crops'
+    defaultDescription: 'Manage your inventory and track stock levels of your Indian crops'
   });
 
   const handleExportData = () => {
@@ -189,8 +189,8 @@ const InventoryPage = () => {
   const cropsContent = (
     <StatisticsProvider>
       <div className="space-y-8">
-        <GuadeloupeSpecificCrops />
-        <GuadeloupeHarvestTracking />
+        <IndianSpecificCrops />
+        <IndianHarvestTracking />
       </div>
     </StatisticsProvider>
   );
@@ -209,7 +209,7 @@ const InventoryPage = () => {
     {
       value: 'weather',
       label: 'Weather',
-      content: <GuadeloupeWeatherAlerts />
+      content: <IndianWeatherAlerts />
     }
   ];
 
