@@ -10,9 +10,11 @@ import ParcelActionButtons from '../components/parcels/ParcelActionButtons';
 import ParcelMapDialog from '../components/parcels/ParcelMapDialog';
 import ParcelImportDialog from '../components/parcels/ParcelImportDialog';
 import IndianParcelManagement from '../components/IndianParcelManagement';
+import WeatherForecast from '../components/WeatherForecast';
 import { useCRM } from '../contexts/CRMContext';
-import { FileSpreadsheet, FileBarChart2 } from 'lucide-react';
+import { FileSpreadsheet, FileBarChart2, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Select } from '@/components/ui/select';
 
 const ParcelsPage = () => {
   const { 
@@ -46,6 +48,15 @@ const ParcelsPage = () => {
     { id: 1, parcel: 'Parcel A12', type: 'Heavy rain', severity: 'High' },
     { id: 2, parcel: 'Parcel B05', type: 'Drought', severity: 'Medium' }
   ]);
+  
+  // Farm locations for weather forecasts
+  const parcelLocations = [
+    { id: 1, name: 'Parcel A12', location: 'Maharashtra, India' },
+    { id: 2, name: 'Parcel B05', location: 'Punjab, India' },
+    { id: 3, name: 'Parcel C08', location: 'Tamil Nadu, India' }
+  ];
+  
+  const [selectedParcelLocation, setSelectedParcelLocation] = useState(parcelLocations[0].location);
 
   // Simulate data synchronization with other modules
   useEffect(() => {
@@ -175,6 +186,35 @@ const ParcelsPage = () => {
           </div>
         </div>
 
+        {/* Weather Forecast Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-6 p-4 bg-white rounded-xl border border-muted"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <MapPin className="h-5 w-5 mr-2 text-agri-primary" />
+              <h2 className="text-lg font-medium">Parcel Weather Forecast</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <Select 
+                value={selectedParcelLocation}
+                onValueChange={setSelectedParcelLocation}
+                className="w-48"
+              >
+                {parcelLocations.map(location => (
+                  <option key={location.id} value={location.location}>
+                    {location.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+          <WeatherForecast location={selectedParcelLocation} days={5} />
+        </motion.div>
+        
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

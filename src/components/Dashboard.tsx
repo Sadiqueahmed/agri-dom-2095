@@ -15,7 +15,8 @@ import {
   Plus,
   X,
   Check,
-  Edit
+  Edit,
+  MapPin
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -27,6 +28,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select } from './ui/select';
 import PageHeader from './layout/PageHeader';
+import WeatherForecast from './WeatherForecast';
 
 // Sample data for charts - Adapted for Indian agriculture
 const revenueData = [
@@ -98,6 +100,15 @@ const Dashboard = () => {
   const [averageYield, setAverageYield] = useState(75);
   const [yieldGrowth, setYieldGrowth] = useState(5.2);
   const [alertsCount, setAlertsCount] = useState(3);
+  
+  // Farm locations for weather forecasts
+  const farmLocations = [
+    { id: 1, name: 'Main Farm', location: 'Maharashtra, India' },
+    { id: 2, name: 'Northern Fields', location: 'Punjab, India' },
+    { id: 3, name: 'Southern Plantation', location: 'Tamil Nadu, India' }
+  ];
+  
+  const [selectedLocation, setSelectedLocation] = useState(farmLocations[0].location);
   const [weatherAlertsCount, setWeatherAlertsCount] = useState(2);
   
   // Lists
@@ -372,6 +383,28 @@ const Dashboard = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
+      
+      {/* Weather Forecast Section */}
+      <div className="mb-6 bg-white rounded-xl border p-6 mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Weather Forecast</h3>
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-gray-500" />
+            <Select 
+              value={selectedLocation}
+              onValueChange={setSelectedLocation}
+              className="w-48"
+            >
+              {farmLocations.map(location => (
+                <option key={location.id} value={location.location}>
+                  {location.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <WeatherForecast location={selectedLocation} days={5} />
       </div>
 
 
