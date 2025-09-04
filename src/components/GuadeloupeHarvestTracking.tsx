@@ -46,7 +46,7 @@ const harvestFormSchema = z.object({
   unit: z.enum(['kg', 'tonnes', 'quintals']),
   quality: z.enum(['Excellent', 'Good', 'Average', 'Poor']),
   location: z.string().min(1, { message: "Location is required" }),
-  notes: z.string().optional(),
+  notes: z.string().default(''),
 });
 
 const IndianHarvestTracking = () => {
@@ -131,95 +131,65 @@ const IndianHarvestTracking = () => {
     }
   ]);
 
-  const columns: Column<HarvestRecord>[] = [
+  const columns: Column[] = [
     {
-      key: 'date',
+      id: 'date',
       header: 'Date',
-      cell: (record) => (
-        <EditableField
-          value={record.date}
-          type="date"
-          onSave={(value) => handleEditRecord(record.id, 'date', String(value))}
-        />
-      ),
+      accessorKey: 'date',
+      type: 'text',
+      isEditable: true
     },
     {
-      key: 'crop',
+      id: 'crop',
       header: 'Crop',
-      cell: (record) => (
-        <EditableField
-          value={record.crop}
-          onSave={(value) => handleEditRecord(record.id, 'crop', String(value))}
-        />
-      ),
+      accessorKey: 'crop',
+      type: 'text',
+      isEditable: true
     },
     {
-      key: 'variety',
+      id: 'variety',
       header: 'Variety',
-      cell: (record) => (
-        <EditableField
-          value={record.variety}
-          onSave={(value) => handleEditRecord(record.id, 'variety', String(value))}
-        />
-      ),
+      accessorKey: 'variety',
+      type: 'text',
+      isEditable: true
     },
     {
-      key: 'quantity',
+      id: 'quantity',
       header: 'Quantity',
-      cell: (record) => (
-        <EditableField
-          value={record.quantity}
-          type="number"
-          onSave={(value) => handleEditRecord(record.id, 'quantity', Number(value))}
-        />
-      ),
+      accessorKey: 'quantity',
+      type: 'number',
+      isEditable: true
     },
     {
-      key: 'unit',
+      id: 'unit',
       header: 'Unit',
-      cell: (record) => (
-        <EditableField
-          value={record.unit}
-          onSave={(value) => handleEditRecord(record.id, 'unit', String(value))}
-        />
-      ),
+      accessorKey: 'unit',
+      type: 'select',
+      options: ['kg', 'tonnes', 'quintals'],
+      isEditable: true
     },
     {
-      key: 'quality',
+      id: 'quality',
       header: 'Quality',
-      cell: (record) => (
-        <Badge 
-          variant={record.quality === 'Excellent' ? 'default' : 
-                  record.quality === 'Good' ? 'secondary' :
-                  record.quality === 'Average' ? 'outline' : 'destructive'}
-        >
-          <EditableField
-            value={record.quality}
-            onSave={(value) => handleEditRecord(record.id, 'quality', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'quality',
+      type: 'select',
+      options: ['Excellent', 'Good', 'Average', 'Poor'],
+      isEditable: true
     },
     {
-      key: 'location',
+      id: 'location',
       header: 'Location',
-      cell: (record) => (
-        <EditableField
-          value={record.location}
-          onSave={(value) => handleEditRecord(record.id, 'location', String(value))}
-        />
-      ),
+      accessorKey: 'location',
+      type: 'text',
+      isEditable: true
     },
     {
-      key: 'notes',
+      id: 'notes',
       header: 'Notes',
-      cell: (record) => (
-        <EditableField
-          value={record.notes}
-          onSave={(value) => handleEditRecord(record.id, 'notes', String(value))}
-        />
-      ),
-    },
+      accessorKey: 'notes',
+      type: 'text',
+      isEditable: true
+    }
   ];
 
   const handleEditRecord = (id: number, field: keyof HarvestRecord, value: any) => {
@@ -245,7 +215,14 @@ const IndianHarvestTracking = () => {
   const handleAddRecord = (values: z.infer<typeof harvestFormSchema>) => {
     const newRecord: HarvestRecord = {
       id: Math.max(...harvestRecords.map(r => r.id), 0) + 1,
-      ...values,
+      date: values.date || new Date().toISOString().split('T')[0],
+      crop: values.crop || 'Rice',
+      variety: values.variety || 'Unknown',
+      quantity: values.quantity || 0,
+      unit: values.unit || 'kg',
+      quality: values.quality || 'Good',
+      location: values.location || 'Unknown',
+      notes: values.notes || '',
     };
     setHarvestRecords(records => [...records, newRecord]);
     setDialogOpen(false);
@@ -289,7 +266,7 @@ const IndianHarvestTracking = () => {
           <h1 className="text-2xl font-bold mb-2">
             <EditableField
               value={title}
-              onSave={setTitle}
+              onSave={(value: string) => setTitle(value)}
               className="inline-block"
               showEditIcon={true}
             />
@@ -297,7 +274,7 @@ const IndianHarvestTracking = () => {
           <p className="text-muted-foreground">
             <EditableField
               value={description}
-              onSave={setDescription}
+              onSave={(value: string) => setDescription(value)}
               className="inline-block"
               showEditIcon={true}
             />
@@ -567,6 +544,16 @@ const IndianHarvestTracking = () => {
         <EditableTable
           data={filteredRecords}
           columns={columns}
+          onUpdate={(rowIndex: number, columnId: string, value: any) => {
+            const recordId = filteredRecords[rowIndex].id;
+            setHarvestRecords(records =>
+              records.map(record =>
+                record.id === recordId
+                  ? { ...record, [columnId]: value }
+                  : record
+              )
+            );
+          }}
           onDelete={handleDeleteRecord}
           className="w-full"
         />

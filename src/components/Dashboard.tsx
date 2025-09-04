@@ -20,17 +20,18 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { EditableField } from './ui/editable-field';
-import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
-import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Select } from './ui/select';
+
 import PageHeader from './layout/PageHeader';
 import WeatherForecast from './WeatherForecast';
-
-// Sample data for charts - Adapted for Indian agriculture
 const revenueData = [
   { month: 'Jan', revenue: 45000 },
   { month: 'Feb', revenue: 52000 },
@@ -394,13 +395,17 @@ const Dashboard = () => {
             <Select 
               value={selectedLocation}
               onValueChange={setSelectedLocation}
-              className="w-48"
             >
-              {farmLocations.map(location => (
-                <option key={location.id} value={location.location}>
-                  {location.name}
-                </option>
-              ))}
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {farmLocations.map(location => (
+                  <SelectItem key={location.id} value={location.location}>
+                    {location.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
         </div>
