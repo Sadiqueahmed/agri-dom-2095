@@ -202,13 +202,17 @@ const ParcelsPage = () => {
               <Select 
                 value={selectedParcelLocation}
                 onValueChange={setSelectedParcelLocation}
-                className="w-48"
               >
-                {parcelLocations.map(location => (
-                  <option key={location.id} value={location.location}>
-                    {location.name}
-                  </option>
-                ))}
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="All Locations" />
+                </SelectTrigger>
+                <SelectContent>
+                  {parcelLocations.map(location => (
+                    <SelectItem key={location.id} value={location.location}>
+                      {location.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
           </div>

@@ -96,11 +96,11 @@ const EnvironmentalCharts = () => {
                     <td className="px-4 py-3 text-agri-success">{item.trend}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                        item.status === 'Atteint' 
+                        item.status === 'Achieved' 
                           ? 'bg-agri-success/10 text-agri-success' 
                           : 'bg-agri-warning/10 text-agri-warning'
                       }`}>
-                        {item.status === 'Atteint' ? 'Achieved' : item.status}
+                        {item.status === 'Achieved' ? 'Achieved' : item.status}
                       </span>
                     </td>
                   </tr>

@@ -162,136 +162,81 @@ const IndianParcelManagement = () => {
     }
   ]);
 
-  const columns: Column<Plot>[] = [
+  const columns: Column[] = [
     {
-      key: 'name',
-      header: 'Plot Name',
-      cell: (record) => (
-        <div className="flex items-center">
-          <MapPin className="h-4 w-4 mr-2 text-blue-500" />
-          <EditableField
-            value={record.name}
-            onSave={(value) => handleEditPlot(record.id, 'name', String(value))}
-          />
-        </div>
-      ),
+      id: 'name',
+      header: 'Plot Name', 
+      accessorKey: 'name',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'area',
+      id: 'area',
       header: 'Area',
-      cell: (record) => (
-        <div className="flex items-center space-x-1">
-          <Ruler className="h-4 w-4 text-green-500" />
-          <EditableField
-            value={record.area}
-            type="number"
-            onSave={(value) => handleEditPlot(record.id, 'area', Number(value))}
-          />
-          <span className="text-xs text-muted-foreground">{record.unit}</span>
-        </div>
-      ),
+      accessorKey: 'area', 
+      isEditable: true,
+      type: 'number'
     },
     {
-      key: 'location',
+      id: 'location',
       header: 'Location',
-      cell: (record) => (
-        <EditableField
-          value={record.location}
-          onSave={(value) => handleEditPlot(record.id, 'location', String(value))}
-        />
-      ),
+      accessorKey: 'location',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'soilType',
+      id: 'soilType',
       header: 'Soil Type',
-      cell: (record) => (
-        <Badge variant="outline">
-          <EditableField
-            value={record.soilType}
-            onSave={(value) => handleEditPlot(record.id, 'soilType', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'soilType',
+      isEditable: true,
+      type: 'select',
+      options: ['Clay', 'Loam', 'Sandy', 'Red Soil', 'Black Soil', 'Alluvial']
     },
     {
-      key: 'irrigationType',
+      id: 'irrigationType',
       header: 'Irrigation',
-      cell: (record) => (
-        <div className="flex items-center">
-          <Droplets className="h-4 w-4 mr-2 text-blue-500" />
-          <EditableField
-            value={record.irrigationType}
-            onSave={(value) => handleEditPlot(record.id, 'irrigationType', String(value))}
-          />
-        </div>
-      ),
+      accessorKey: 'irrigationType',
+      isEditable: true,
+      type: 'select', 
+      options: ['Drip', 'Sprinkler', 'Flood', 'Manual', 'Canal']
     },
     {
-      key: 'currentCrop',
+      id: 'currentCrop',
       header: 'Current Crop',
-      cell: (record) => (
-        <EditableField
-          value={record.currentCrop}
-          onSave={(value) => handleEditPlot(record.id, 'currentCrop', String(value))}
-        />
-      ),
+      accessorKey: 'currentCrop',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'cropStage',
+      id: 'cropStage',
       header: 'Stage',
-      cell: (record) => (
-        <Badge 
-          variant={record.cropStage === 'Harvest Ready' ? 'default' : 
-                  record.cropStage === 'Growing' ? 'secondary' :
-                  record.cropStage === 'Fruiting' ? 'outline' : 'destructive'}
-        >
-          <EditableField
-            value={record.cropStage}
-            onSave={(value) => handleEditPlot(record.id, 'cropStage', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'cropStage',
+      isEditable: true,
+      type: 'select',
+      options: ['Planted', 'Growing', 'Flowering', 'Fruiting', 'Harvest Ready', 'Fallow']
     },
     {
-      key: 'soilMoisture',
+      id: 'soilMoisture',
       header: 'Moisture',
-      cell: (record) => (
-        <Badge 
-          variant={record.soilMoisture === 'Optimal' ? 'default' : 
-                  record.soilMoisture === 'High' ? 'secondary' :
-                  record.soilMoisture === 'Medium' ? 'outline' : 'destructive'}
-        >
-          <EditableField
-            value={record.soilMoisture}
-            onSave={(value) => handleEditPlot(record.id, 'soilMoisture', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'soilMoisture',
+      isEditable: true,
+      type: 'select',
+      options: ['Low', 'Medium', 'High', 'Optimal']
     },
     {
-      key: 'nextIrrigation',
+      id: 'nextIrrigation',
       header: 'Next Irrigation',
-      cell: (record) => (
-        <div className="flex items-center">
-          <Calendar className="h-4 w-4 mr-2 text-orange-500" />
-          <EditableField
-            value={record.nextIrrigation}
-            type="date"
-            onSave={(value) => handleEditPlot(record.id, 'nextIrrigation', String(value))}
-          />
-        </div>
-      ),
+      accessorKey: 'nextIrrigation',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'notes',
+      id: 'notes',
       header: 'Notes',
-      cell: (record) => (
-        <EditableField
-          value={record.notes}
-          onSave={(value) => handleEditPlot(record.id, 'notes', String(value))}
-        />
-      ),
-    },
+      accessorKey: 'notes',
+      isEditable: true,
+      type: 'text'
+    }
   ];
 
   const handleEditPlot = (id: number, field: keyof Plot, value: any) => {
@@ -317,7 +262,18 @@ const IndianParcelManagement = () => {
   const handleAddPlot = (values: z.infer<typeof plotFormSchema>) => {
     const newPlot: Plot = {
       id: Math.max(...plots.map(p => p.id), 0) + 1,
-      ...values,
+      name: values.name || '',
+      location: values.location || '',
+      area: values.area || 0,
+      unit: values.unit || 'hectares',
+      soilType: values.soilType || 'Loam',
+      irrigationType: values.irrigationType || 'Flood',
+      currentCrop: values.currentCrop || '',
+      cropStage: values.cropStage || 'Planted',
+      lastIrrigation: values.lastIrrigation || '',
+      nextIrrigation: values.nextIrrigation || '',
+      soilMoisture: values.soilMoisture || 'Medium',
+      notes: values.notes || '',
     };
     setPlots(plots => [...plots, newPlot]);
     setDialogOpen(false);
@@ -361,7 +317,7 @@ const IndianParcelManagement = () => {
           <h1 className="text-2xl font-bold mb-2">
             <EditableField
               value={title}
-              onSave={setTitle}
+              onSave={(value) => setTitle(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -369,7 +325,7 @@ const IndianParcelManagement = () => {
           <p className="text-muted-foreground">
             <EditableField
               value={description}
-              onSave={setDescription}
+              onSave={(value) => setDescription(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -728,6 +684,7 @@ const IndianParcelManagement = () => {
         <EditableTable
           data={filteredPlots}
           columns={columns}
+          onUpdate={handleEditPlot}
           onDelete={handleDeletePlot}
           className="w-full"
         />

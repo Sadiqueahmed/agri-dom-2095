@@ -131,111 +131,60 @@ const IndianWeatherAlerts = () => {
     }
   ]);
 
-  const columns: Column<WeatherAlert>[] = [
+  const columns: Column[] = [
     {
-      key: 'date',
+      id: 'date',
       header: 'Date',
-      cell: (record) => (
-        <EditableField
-          value={record.date}
-          type="date"
-          onSave={(value) => handleEditAlert(record.id, 'date', String(value))}
-        />
-      ),
+      accessorKey: 'date',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'type',
+      id: 'type',
       header: 'Type',
-      cell: (record) => (
-        <div className="flex items-center space-x-2">
-          {record.type === 'Monsoon' && <CloudRain className="h-4 w-4 text-blue-500" />}
-          {record.type === 'Drought' && <Sun className="h-4 w-4 text-orange-500" />}
-          {record.type === 'Heatwave' && <Thermometer className="h-4 w-4 text-red-500" />}
-          {record.type === 'Flood' && <CloudRain className="h-4 w-4 text-blue-600" />}
-          {record.type === 'Cyclone' && <Wind className="h-4 w-4 text-red-600" />}
-          <EditableField
-            value={record.type}
-            onSave={(value) => handleEditAlert(record.id, 'type', String(value))}
-          />
-        </div>
-      ),
+      accessorKey: 'type',
+      isEditable: true,
+      type: 'select',
+      options: ['Monsoon', 'Drought', 'Heatwave', 'Flood', 'Cyclone']
     },
     {
-      key: 'region',
+      id: 'region',
       header: 'Region',
-      cell: (record) => (
-        <EditableField
-          value={record.region}
-          onSave={(value) => handleEditAlert(record.id, 'region', String(value))}
-        />
-      ),
+      accessorKey: 'region',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'severity',
+      id: 'severity',
       header: 'Severity',
-      cell: (record) => (
-        <Badge 
-          variant={record.severity === 'Low' ? 'outline' : 
-                  record.severity === 'Medium' ? 'secondary' :
-                  record.severity === 'High' ? 'default' : 'destructive'}
-        >
-          <EditableField
-            value={record.severity}
-            onSave={(value) => handleEditAlert(record.id, 'severity', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'severity',
+      isEditable: true,
+      type: 'select',
+      options: ['Low', 'Medium', 'High', 'Extreme']
     },
     {
-      key: 'impactCrops',
-      header: 'Crop Impact',
-      cell: (record) => (
-        <Badge 
-          variant={record.impactCrops === 'Low' ? 'outline' : 
-                  record.impactCrops === 'Moderate' ? 'secondary' : 'destructive'}
-        >
-          <EditableField
-            value={record.impactCrops}
-            onSave={(value) => handleEditAlert(record.id, 'impactCrops', String(value))}
-          />
-        </Badge>
-      ),
-    },
-    {
-      key: 'description',
-      header: 'Description',
-      cell: (record) => (
-        <EditableField
-          value={record.description}
-          onSave={(value) => handleEditAlert(record.id, 'description', String(value))}
-        />
-      ),
-    },
-    {
-      key: 'recommendation',
-      header: 'Recommendation',
-      cell: (record) => (
-        <EditableField
-          value={record.recommendation}
-          onSave={(value) => handleEditAlert(record.id, 'recommendation', String(value))}
-        />
-      ),
-    },
-    {
-      key: 'status',
+      id: 'status',
       header: 'Status',
-      cell: (record) => (
-        <Badge 
-          variant={record.status === 'Active' ? 'default' : 
-                  record.status === 'Scheduled' ? 'secondary' : 'outline'}
-        >
-          <EditableField
-            value={record.status}
-            onSave={(value) => handleEditAlert(record.id, 'status', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'status',
+      isEditable: true,
+      type: 'select',
+      options: ['Active', 'Scheduled', 'Completed']
     },
+    {
+      id: 'impactCrops',
+      header: 'Crop Impact',
+      accessorKey: 'impactCrops',
+      isEditable: true,
+      type: 'select',
+      options: ['Low', 'Moderate', 'Severe']
+    },
+    {
+      id: 'recommendation',
+      header: 'Recommendation',
+      accessorKey: 'recommendation',
+      isEditable: true,
+      type: 'text'
+    }
   ];
 
   const handleEditAlert = (id: number, field: keyof WeatherAlert, value: any) => {
@@ -261,7 +210,14 @@ const IndianWeatherAlerts = () => {
   const handleAddAlert = (values: z.infer<typeof alertFormSchema>) => {
     const newAlert: WeatherAlert = {
       id: Math.max(...weatherAlerts.map(a => a.id), 0) + 1,
-      ...values,
+      date: values.date || new Date().toISOString().split('T')[0],
+      type: values.type || 'Monsoon',
+      region: values.region || '',
+      severity: values.severity || 'Medium',
+      status: values.status || 'Active',
+      description: values.description || '',
+      impactCrops: values.impactCrops || 'Moderate',
+      recommendation: values.recommendation || '',
     };
     setWeatherAlerts(alerts => [...alerts, newAlert]);
     setDialogOpen(false);
@@ -294,7 +250,7 @@ const IndianWeatherAlerts = () => {
           <h1 className="text-2xl font-bold mb-2">
             <EditableField
               value={title}
-              onSave={setTitle}
+              onSave={(value) => setTitle(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -302,7 +258,7 @@ const IndianWeatherAlerts = () => {
           <p className="text-muted-foreground">
             <EditableField
               value={description}
-              onSave={setDescription}
+              onSave={(value) => setDescription(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -582,6 +538,7 @@ const IndianWeatherAlerts = () => {
         <EditableTable
           data={filteredAlerts}
           columns={columns}
+          onUpdate={handleEditAlert}
           onDelete={handleDeleteAlert}
           className="w-full"
         />

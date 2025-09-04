@@ -53,10 +53,10 @@ const cropFormSchema = z.object({
   notes: z.string().optional(),
 });
 
-const IndianSpecificCrops = () => {
+const GuadeloupeSpecificCrops = () => {
   const { toast } = useToast();
-  const [title, setTitle] = useState('Indian Specific Crops');
-  const [description, setDescription] = useState('Manage and track your Indian agricultural crops across different seasons');
+  const [title, setTitle] = useState('Guadeloupe Specific Crops');
+  const [description, setDescription] = useState('Manage and track your Guadeloupe agricultural crops across different seasons');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSeason, setFilterSeason] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -159,109 +159,65 @@ const IndianSpecificCrops = () => {
     }
   ]);
 
-  const columns: Column<CropData>[] = [
+  const columns: Column[] = [
     {
-      key: 'name',
+      id: 'name',
       header: 'Crop',
-      cell: (record) => (
-        <div className="flex items-center">
-          <Sprout className="h-4 w-4 mr-2 text-green-500" />
-          <EditableField
-            value={record.name}
-            onSave={(value) => handleEditCrop(record.id, 'name', String(value))}
-          />
-        </div>
-      ),
+      accessorKey: 'name',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'variety',
-      header: 'Variety',
-      cell: (record) => (
-        <EditableField
-          value={record.variety}
-          onSave={(value) => handleEditCrop(record.id, 'variety', String(value))}
-        />
-      ),
+      id: 'area',
+      header: 'Area (ha)',
+      accessorKey: 'area',
+      isEditable: true,
+      type: 'number'
     },
     {
-      key: 'season',
-      header: 'Season',
-      cell: (record) => (
-        <Badge 
-          variant={record.season === 'Kharif' ? 'default' : 
-                  record.season === 'Rabi' ? 'secondary' : 'outline'}
-        >
-          <EditableField
-            value={record.season}
-            onSave={(value) => handleEditCrop(record.id, 'season', String(value))}
-          />
-        </Badge>
-      ),
-    },
-    {
-      key: 'region',
+      id: 'region',
       header: 'Region',
-      cell: (record) => (
-        <EditableField
-          value={record.region}
-          onSave={(value) => handleEditCrop(record.id, 'region', String(value))}
-        />
-      ),
+      accessorKey: 'region',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'area',
-      header: 'Area',
-      cell: (record) => (
-        <div className="flex items-center space-x-1">
-          <EditableField
-            value={record.area}
-            type="number"
-            onSave={(value) => handleEditCrop(record.id, 'area', Number(value))}
-          />
-          <span className="text-xs text-muted-foreground">{record.unit}</span>
-        </div>
-      ),
+      id: 'variety',
+      header: 'Variety',
+      accessorKey: 'variety',
+      isEditable: true,
+      type: 'text'
     },
     {
-      key: 'expectedYield',
-      header: 'Expected Yield',
-      cell: (record) => (
-        <div className="flex items-center space-x-1">
-          <EditableField
-            value={record.expectedYield}
-            type="number"
-            onSave={(value) => handleEditCrop(record.id, 'expectedYield', Number(value))}
-          />
-          <span className="text-xs text-muted-foreground">{record.yieldUnit}</span>
-        </div>
-      ),
+      id: 'season',
+      header: 'Season',
+      accessorKey: 'season',
+      isEditable: true,
+      type: 'select',
+      options: ['Kharif', 'Rabi', 'Zaid']
     },
     {
-      key: 'status',
+      id: 'status',
       header: 'Status',
-      cell: (record) => (
-        <Badge 
-          variant={record.status === 'Growing' ? 'default' : 
-                  record.status === 'Harvested' ? 'secondary' :
-                  record.status === 'Planned' ? 'outline' : 'destructive'}
-        >
-          <EditableField
-            value={record.status}
-            onSave={(value) => handleEditCrop(record.id, 'status', String(value))}
-          />
-        </Badge>
-      ),
+      accessorKey: 'status',
+      isEditable: true,
+      type: 'select',
+      options: ['Planned', 'Growing', 'Harvested', 'Completed']
     },
     {
-      key: 'notes',
-      header: 'Notes',
-      cell: (record) => (
-        <EditableField
-          value={record.notes}
-          onSave={(value) => handleEditCrop(record.id, 'notes', String(value))}
-        />
-      ),
+      id: 'expectedYield',
+      header: 'Expected Yield',
+      accessorKey: 'expectedYield',
+      isEditable: true,
+      type: 'number'
     },
+    {
+      id: 'notes',
+      header: 'Notes',
+      accessorKey: 'notes',
+      isEditable: true,
+      type: 'text'
+    }
   ];
 
   const handleEditCrop = (id: number, field: keyof CropData, value: any) => {
@@ -287,7 +243,16 @@ const IndianSpecificCrops = () => {
   const handleAddCrop = (values: z.infer<typeof cropFormSchema>) => {
     const newCrop: CropData = {
       id: Math.max(...cropsData.map(c => c.id), 0) + 1,
-      ...values,
+      name: values.name || '',
+      area: values.area || 0,
+      unit: values.unit || 'hectares',
+      region: values.region || '',
+      variety: values.variety || '',
+      season: values.season || 'Kharif',
+      status: values.status || 'Planned',
+      expectedYield: values.expectedYield || 0,
+      yieldUnit: values.yieldUnit || 'kg',
+      notes: values.notes || '',
     };
     setCropsData(crops => [...crops, newCrop]);
     setDialogOpen(false);
@@ -324,7 +289,7 @@ const IndianSpecificCrops = () => {
           <h1 className="text-2xl font-bold mb-2">
             <EditableField
               value={title}
-              onSave={setTitle}
+              onSave={(value) => setTitle(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -332,7 +297,7 @@ const IndianSpecificCrops = () => {
           <p className="text-muted-foreground">
             <EditableField
               value={description}
-              onSave={setDescription}
+              onSave={(value) => setDescription(String(value))}
               className="inline-block"
               showEditIcon={true}
             />
@@ -660,6 +625,7 @@ const IndianSpecificCrops = () => {
         <EditableTable
           data={filteredCrops}
           columns={columns}
+          onUpdate={handleEditCrop}
           onDelete={handleDeleteCrop}
           className="w-full"
         />
@@ -668,4 +634,4 @@ const IndianSpecificCrops = () => {
   );
 };
 
-export default IndianSpecificCrops;
+export default GuadeloupeSpecificCrops;

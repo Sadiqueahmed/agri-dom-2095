@@ -507,7 +507,9 @@ const SettingsPage = () => {
                       <input
                         type="text"
                         id="seasonStart"
-                        value={localSettings.agriculture.growingSeason.start}
+                         value={typeof localSettings.agriculture.growingSeason.start === 'object' ? 
+                           `${String(localSettings.agriculture.growingSeason.start.month).padStart(2, '0')}-${String(localSettings.agriculture.growingSeason.start.day).padStart(2, '0')}` : 
+                           localSettings.agriculture.growingSeason.start}
                         onChange={(e) => handleGrowingSeasonChange('start', e.target.value)}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="MM-DD"
@@ -519,7 +521,9 @@ const SettingsPage = () => {
                       <input
                         type="text"
                         id="seasonEnd"
-                        value={localSettings.agriculture.growingSeason.end}
+                         value={typeof localSettings.agriculture.growingSeason.end === 'object' ? 
+                           `${String(localSettings.agriculture.growingSeason.end.month).padStart(2, '0')}-${String(localSettings.agriculture.growingSeason.end.day).padStart(2, '0')}` : 
+                           localSettings.agriculture.growingSeason.end}
                         onChange={(e) => handleGrowingSeasonChange('end', e.target.value)}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="MM-DD"
