@@ -14,7 +14,7 @@ import WeatherForecast from '../components/WeatherForecast';
 import { useCRM } from '../contexts/CRMContext';
 import { FileSpreadsheet, FileBarChart2, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Select } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const ParcelsPage = () => {
   const { 
