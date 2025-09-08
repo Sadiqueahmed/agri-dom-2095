@@ -16,6 +16,54 @@ import { FileSpreadsheet, FileBarChart2, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+// Add the type definition for ParcelData if not already imported
+interface ParcelData {
+  id: number;
+  name: string;
+  area: number;
+  crop: string;
+  status: 'active' | 'inactive' | 'planned';
+  lastActivity: string;
+  soilType: string;
+  coordinates: { lat: number; lng: number };
+  notes?: string;
+  ph?: number;
+  organicMatter?: number;
+}
+
+const initialParcelData: ParcelData[] = [
+  { 
+    id: 1, 
+    name: 'North Plot', 
+    area: 12.5, 
+    crop: 'Wheat', 
+    status: 'active', 
+    lastActivity: '2023-08-15', 
+    soilType: 'Clay', 
+    coordinates: { lat: 45.4397, lng: 4.3872 }
+  },
+  { 
+    id: 2, 
+    name: 'East Plot', 
+    area: 8.3, 
+    crop: 'Corn', 
+    status: 'active', 
+    lastActivity: '2023-08-10', 
+    soilType: 'Loamy', 
+    coordinates: { lat: 45.4412, lng: 4.3901 }
+  },
+  { 
+    id: 3, 
+    name: 'South Plot', 
+    area: 15.7, 
+    crop: 'Sunflower', 
+    status: 'active', 
+    lastActivity: '2023-08-05', 
+    soilType: 'Sandy', 
+    coordinates: { lat: 45.4380, lng: 4.3855 }
+  },
+];
+
 const ParcelsPage = () => {
   const { 
     title, 
@@ -27,6 +75,7 @@ const ParcelsPage = () => {
     defaultDescription: 'Manage, organize and optimize all your agricultural parcels'
   });
 
+  const [parcels, setParcels] = useState<ParcelData[]>(initialParcelData);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
@@ -57,6 +106,14 @@ const ParcelsPage = () => {
   ];
   
   const [selectedParcelLocation, setSelectedParcelLocation] = useState(parcelLocations[0].location);
+
+  // New state to control the visibility of the Add Parcel form
+  const [showAddParcelForm, setShowAddParcelForm] = useState(false);
+
+  // Function to handle the "Add a parcel" button click
+  const handleAddParcel = () => {
+    setShowAddParcelForm(true);
+  };
 
   // Simulate data synchronization with other modules
   useEffect(() => {
@@ -127,10 +184,6 @@ const ParcelsPage = () => {
   const handleOpenLayerManager = () => {
     setLayersDialogOpen(true);
     console.log("Layer manager opened");
-  };
-
-  const handleAddParcel = () => {
-    console.log("Parcel creation form opened");
   };
 
   return (
@@ -252,7 +305,12 @@ const ParcelsPage = () => {
         {showIndianView ? (
           <IndianParcelManagement />
         ) : (
-          <ParcelManagement />
+          <ParcelManagement 
+            parcels={parcels}
+            setParcels={setParcels}
+            showAddParcelForm={showAddParcelForm}
+            setShowAddParcelForm={setShowAddParcelForm}
+          />
         )}
         
         <ParcelMapDialog 

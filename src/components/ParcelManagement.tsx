@@ -29,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 // Types for parcels
 interface ParcelData {
@@ -115,98 +117,19 @@ const initialCropHistory: CropHistoryEntry[] = [
   { year: '2020', crop: 'Rapeseed', yield: '3.8 t/ha', notes: 'Insect problems' }
 ];
 
-// Component for the visual representation of a parcel
-const ParcelCard = ({ 
-  parcel, 
-  onSelect, 
-  onEdit,
-  onDelete
-}: { 
-  parcel: ParcelData, 
-  onSelect: (parcel: ParcelData) => void,
-  onEdit: (parcel: ParcelData) => void,
-  onDelete: (id: number) => void
-}) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-agri-success';
-      case 'inactive': return 'bg-agri-danger';
-      case 'planned': return 'bg-agri-warning';
-      default: return 'bg-gray-300';
-    }
-  };
+interface ParcelManagementProps {
+  parcels: ParcelData[];
+  setParcels: React.Dispatch<React.SetStateAction<ParcelData[]>>;
+  showAddParcelForm: boolean;
+  setShowAddParcelForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'active': return 'Active';
-      case 'inactive': return 'Inactive';
-      case 'planned': return 'Planned';
-      default: return 'Unknown';
-    }
-  };
-
-  return (
-    <div 
-      className="border rounded-xl p-4 bg-white hover:shadow-md transition-shadow cursor-pointer card-hover"
-      onClick={() => onSelect(parcel)}
-    >
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="font-medium">{parcel.name}</h3>
-        <div className={`flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusColor(parcel.status)} bg-opacity-10 text-foreground`}>
-          <span className={`w-2 h-2 rounded-full ${getStatusColor(parcel.status)} mr-1.5`}></span>
-          {getStatusLabel(parcel.status)}
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-y-2 text-sm text-muted-foreground mb-3">
-        <div className="flex items-center">
-          <Layers className="h-4 w-4 mr-1.5" />
-          <span>{parcel.area} ha</span>
-        </div>
-        <div className="flex items-center">
-          <Calendar className="h-4 w-4 mr-1.5" />
-          <span>{new Date(parcel.lastActivity).toLocaleDateString()}</span>
-        </div>
-        <div className="col-span-2 mt-1 py-1 px-2 bg-agri-primary/5 rounded-md text-center">
-          <span className="text-agri-primary font-medium">{parcel.crop}</span>
-        </div>
-      </div>
-      
-      <div className="flex justify-between mt-2 pt-2 border-t border-border">
-        <button 
-          className="p-1.5 hover:bg-gray-100 rounded"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit(parcel);
-          }}
-        >
-          <Edit className="h-4 w-4 text-muted-foreground" />
-        </button>
-        <button 
-          className="p-1.5 hover:bg-gray-100 rounded"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(parcel);
-          }}
-        >
-          <MapPin className="h-4 w-4 text-muted-foreground" />
-        </button>
-        <button 
-          className="p-1.5 hover:bg-gray-100 rounded text-agri-danger"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(parcel.id);
-          }}
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const ParcelManagement = () => {
-  const [parcels, setParcels] = useState<ParcelData[]>(initialParcelData);
+const ParcelManagement = ({ 
+  parcels, 
+  setParcels, 
+  showAddParcelForm, 
+  setShowAddParcelForm
+}: ParcelManagementProps) => {
   const [selectedParcel, setSelectedParcel] = useState<ParcelData | null>(null);
   const [editingParcel, setEditingParcel] = useState<ParcelData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -215,7 +138,6 @@ const ParcelManagement = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [isEditing, setIsEditing] = useState(false);
   const [cropHistory, setCropHistory] = useState<CropHistoryEntry[]>(initialCropHistory);
-  const [showAddParcelForm, setShowAddParcelForm] = useState(false);
   const [newParcel, setNewParcel] = useState<Partial<ParcelData>>({
     name: '',
     area: 0,
@@ -449,106 +371,121 @@ const ParcelManagement = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Name</label>
-                  <input 
+            <Card>
+              <CardHeader>
+                <CardTitle>Basic Information</CardTitle>
+                <CardDescription>Enter essential details about the new plot.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-name">Name</Label>
+                  <Input 
+                    id="new-name"
                     type="text" 
                     value={newParcel.name || ''} 
                     onChange={(e) => handleNewParcelInputChange('name', e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md"
                     placeholder="Plot name"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Area (ha)</label>
-                  <input 
+                <div className="space-y-2">
+                  <Label htmlFor="new-area">Area (ha)</Label>
+                  <Input 
+                    id="new-area"
                     type="number" 
                     value={newParcel.area || ''} 
                     onChange={(e) => handleNewParcelInputChange('area', e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md"
                     placeholder="Area in hectares"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Crop</label>
-                  <input 
+                <div className="space-y-2">
+                  <Label htmlFor="new-crop">Crop</Label>
+                  <Input 
+                    id="new-crop"
                     type="text" 
                     value={newParcel.crop || ''} 
                     onChange={(e) => handleNewParcelInputChange('crop', e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md"
                     placeholder="Main crop"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Soil type</label>
-                  <input 
+                <div className="space-y-2">
+                  <Label htmlFor="new-soil">Soil type</Label>
+                  <Input 
+                    id="new-soil"
                     type="text" 
                     value={newParcel.soilType || ''} 
                     onChange={(e) => handleNewParcelInputChange('soilType', e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md"
                     placeholder="Soil type"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Last activity</label>
-                  <input 
+                <div className="space-y-2">
+                  <Label htmlFor="new-last-activity">Last activity</Label>
+                  <Input 
+                    id="new-last-activity"
                     type="date" 
                     value={newParcel.lastActivity || ''} 
                     onChange={(e) => handleNewParcelInputChange('lastActivity', e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
+                <div className="space-y-2">
+                  <Label>Status</Label>
                   <div className="flex space-x-2 mt-1">
-                    <button 
-                      className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'active' ? 'bg-agri-success text-white' : 'bg-muted'}`}
+                    <Button 
+                      variant={newParcel.status === 'active' ? 'secondary' : 'outline'}
+                      className={`${newParcel.status === 'active' ? 'bg-agri-success text-white' : 'bg-muted'}`}
                       onClick={() => handleNewParcelStatusChange('active')}
                     >
                       Active
-                    </button>
-                    <button 
-                      className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'planned' ? 'bg-agri-warning text-white' : 'bg-muted'}`}
+                    </Button>
+                    <Button 
+                      variant={newParcel.status === 'planned' ? 'secondary' : 'outline'}
+                      className={`${newParcel.status === 'planned' ? 'bg-agri-warning text-white' : 'bg-muted'}`}
                       onClick={() => handleNewParcelStatusChange('planned')}
                     >
                       Planned
-                    </button>
-                    <button 
-                      className={`px-3 py-1.5 text-xs rounded-md ${newParcel.status === 'inactive' ? 'bg-agri-danger text-white' : 'bg-muted'}`}
+                    </Button>
+                    <Button 
+                      variant={newParcel.status === 'inactive' ? 'secondary' : 'outline'}
+                      className={`${newParcel.status === 'inactive' ? 'bg-agri-danger text-white' : 'bg-muted'}`}
                       onClick={() => handleNewParcelStatusChange('inactive')}
                     >
                       Inactive
-                    </button>
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-1">Map position</label>
-              <ParcelMap 
-                coordinates={newParcel.coordinates || { lat: 45.4390, lng: 4.3885 }}
-                parcelName={newParcel.name || "New plot"}
-                isEditing={true}
-                onCoordinatesChange={handleNewParcelCoordinatesChange}
-              />
-            </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Map Information</CardTitle>
+                <CardDescription>Drag the map to set the plot's coordinates.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ParcelMap 
+                  coordinates={newParcel.coordinates || { lat: 45.4390, lng: 4.3885 }}
+                  parcelName={newParcel.name || "New plot"}
+                  isEditing={true}
+                  onCoordinatesChange={handleNewParcelCoordinatesChange}
+                />
+              </CardContent>
+            </Card>
           </div>
           
           <div className="flex justify-end">
-            <button 
-              className="mr-2 px-4 py-2 border rounded-lg hover:bg-muted"
+            <Button 
+              variant="outline"
+              className="mr-2"
               onClick={() => setShowAddParcelForm(false)}
             >
               Cancel
-            </button>
-            <button 
-              className="px-4 py-2 bg-agri-primary text-white rounded-lg hover:bg-agri-primary-dark"
+            </Button>
+            <Button 
+              className="bg-agri-primary text-white hover:bg-agri-primary-dark"
               onClick={handleSaveNewParcel}
             >
+              <Plus className="h-4 w-4 mr-2" />
               Create
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -900,4 +837,93 @@ const ParcelManagement = () => {
   );
 };
 
+// Component for the visual representation of a parcel
+const ParcelCard = ({ 
+  parcel, 
+  onSelect, 
+  onEdit,
+  onDelete
+}: { 
+  parcel: ParcelData, 
+  onSelect: (parcel: ParcelData) => void,
+  onEdit: (parcel: ParcelData) => void,
+  onDelete: (id: number) => void
+}) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-agri-success';
+      case 'inactive': return 'bg-agri-danger';
+      case 'planned': return 'bg-agri-warning';
+      default: return 'bg-gray-300';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active': return 'Active';
+      case 'inactive': return 'Inactive';
+      case 'planned': return 'Planned';
+      default: return 'Unknown';
+    }
+  };
+
+  return (
+    <div 
+      className="border rounded-xl p-4 bg-white hover:shadow-md transition-shadow cursor-pointer card-hover"
+      onClick={() => onSelect(parcel)}
+    >
+      <div className="flex justify-between items-start mb-3">
+        <h3 className="font-medium">{parcel.name}</h3>
+        <div className={`flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusColor(parcel.status)} bg-opacity-10 text-foreground`}>
+          <span className={`w-2 h-2 rounded-full ${getStatusColor(parcel.status)} mr-1.5`}></span>
+          {getStatusLabel(parcel.status)}
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-y-2 text-sm text-muted-foreground mb-3">
+        <div className="flex items-center">
+          <Layers className="h-4 w-4 mr-1.5" />
+          <span>{parcel.area} ha</span>
+        </div>
+        <div className="flex items-center">
+          <Calendar className="h-4 w-4 mr-1.5" />
+          <span>{new Date(parcel.lastActivity).toLocaleDateString()}</span>
+        </div>
+        <div className="col-span-2 mt-1 py-1 px-2 bg-agri-primary/5 rounded-md text-center">
+          <span className="text-agri-primary font-medium">{parcel.crop}</span>
+        </div>
+      </div>
+      
+      <div className="flex justify-between mt-2 pt-2 border-t border-border">
+        <button 
+          className="p-1.5 hover:bg-gray-100 rounded"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(parcel);
+          }}
+        >
+          <Edit className="h-4 w-4 text-muted-foreground" />
+        </button>
+        <button 
+          className="p-1.5 hover:bg-gray-100 rounded"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(parcel);
+          }}
+        >
+          <MapPin className="h-4 w-4 text-muted-foreground" />
+        </button>
+        <button 
+          className="p-1.5 hover:bg-gray-100 rounded text-agri-danger"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(parcel.id);
+          }}
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 export default ParcelManagement;
