@@ -26,10 +26,8 @@ const SettingsPage = () => {
 
   const { settings, updateSetting } = useAppSettings();
   
-  // Local state to track changes before saving
+  // Local state for other settings to track changes before saving
   const [localSettings, setLocalSettings] = useState({
-    darkMode: settings.darkMode,
-    locale: settings.locale,
     units: { ...settings.units },
     weatherApi: { ...settings.weatherApi },
     agriculture: { ...settings.agriculture },
@@ -48,11 +46,18 @@ const SettingsPage = () => {
   ];
 
   const handleDarkModeChange = (checked: boolean) => {
-    setLocalSettings(prev => ({ ...prev, darkMode: checked }));
+    updateSetting('darkMode', checked);
+    if (checked) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
   };
 
   const handleLocaleChange = (value: string) => {
-    setLocalSettings(prev => ({ ...prev, locale: value }));
+    updateSetting('locale', value);
   };
   
   const handleUnitChange = (unitType: string, value: string) => {
@@ -132,19 +137,10 @@ const SettingsPage = () => {
   };
 
   const saveSettings = () => {
-    // Update all settings at once
+    // Update all local settings at once
     Object.entries(localSettings).forEach(([key, value]) => {
       updateSetting(key, value);
     });
-    
-    // Apply dark mode immediately
-    if (localSettings.darkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
     
     toast({
       title: "Settings saved",
@@ -190,7 +186,7 @@ const SettingsPage = () => {
                   </div>
                   <Switch
                     id="dark-mode"
-                    checked={localSettings.darkMode}
+                    checked={settings.darkMode}
                     onCheckedChange={handleDarkModeChange}
                   />
                 </div>
@@ -219,7 +215,7 @@ const SettingsPage = () => {
                 <div className="space-y-2">
                   <Label htmlFor="locale">Language & Region</Label>
                   <Select
-                    value={localSettings.locale}
+                    value={settings.locale}
                     onValueChange={handleLocaleChange}
                   >
                     <SelectTrigger id="locale" className="w-full">
