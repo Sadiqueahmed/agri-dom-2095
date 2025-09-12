@@ -195,9 +195,9 @@ const FinancialTracking = () => {
         <body>
           <h1>Financial Transactions</h1>
           <div class="summary">
-            <p>Total income: <b>${totalIncome.toFixed(2)} €</b></p>
-            <p>Total expenses: <b>${totalExpenses.toFixed(2)} €</b></p>
-            <p>Balance: <b class="${balance >= 0 ? 'income' : 'expense'}">${balance.toFixed(2)} €</b></p>
+            <p>Total income: <b>₹ ${totalIncome.toFixed(2)}</b></p>
+            <p>Total expenses: <b>₹ ${totalExpenses.toFixed(2)}</b></p>
+            <p>Balance: <b class="${balance >= 0 ? 'income' : 'expense'}">₹ ${balance.toFixed(2)}</b></p>
           </div>
           <table>
             <thead>
@@ -257,7 +257,7 @@ const FinancialTracking = () => {
             <CardDescription>Total income</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">{totalIncome.toFixed(2)} €</p>
+            <p className="text-2xl font-bold text-red-600">₹ {totalExpenses.toFixed(2)}</p>
           </CardContent>
         </Card>
         
@@ -278,7 +278,7 @@ const FinancialTracking = () => {
           </CardHeader>
           <CardContent>
             <p className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {balance.toFixed(2)} €
+              ₹ {balance.toFixed(2)}
             </p>
           </CardContent>
         </Card>
@@ -300,7 +300,7 @@ const FinancialTracking = () => {
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip 
-                    formatter={(value) => [`${value} €`, '']} 
+                    formatter={(value) => [`₹ ${value}`, '']} 
                     labelFormatter={(label) => `Month: ${label}`}
                   />
                   <Bar name="Income" dataKey="income" fill="#4ade80" radius={[4, 4, 0, 0]} />
@@ -508,7 +508,7 @@ const FinancialTracking = () => {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Amount (€)</FormLabel>
+                      <FormLabel>Amount (₹)</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
