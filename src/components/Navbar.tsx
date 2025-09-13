@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   Home, 
   MapPin, 
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
@@ -53,14 +54,14 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { title: 'Dashboard', path: '/', icon: Home },
-    { title: 'Parcels', path: '/parcelles', icon: MapPin },
-    { title: 'Crops', path: '/cultures', icon: Sprout },
-    { title: 'Inventory', path: '/inventaire', icon: Package },
-    { title: 'Finance', path: '/finances', icon: Wallet },
-    { title: 'Statistics', path: '/statistiques', icon: BarChart2 },
-    { title: 'Reports', path: '/rapports', icon: FileText },
-    { title: 'Settings', path: '/parametres', icon: Settings },
+    { title: t('Dashboard'), path: '/', icon: Home },
+    { title: t('Parcels'), path: '/parcelles', icon: MapPin },
+    { title: t('Crops'), path: '/cultures', icon: Sprout },
+    { title: t('Inventory'), path: '/inventaire', icon: Package },
+    { title: t('Finance'), path: '/finances', icon: Wallet },
+    { title: t('Statistics'), path: '/statistiques', icon: BarChart2 },
+    { title: t('Reports'), path: '/rapports', icon: FileText },
+    { title: t('Settings'), path: '/parametres', icon: Settings },
   ];
 
   const isActive = (path: string) => {
