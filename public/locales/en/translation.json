@@ -6,5 +6,18 @@
   "Finance": "Finance",
   "Statistics": "Statistics",
   "Reports": "Reports",
-  "Settings": "Settings"
+  "Settings": "Settings",
+  "Welcome_to_Agri_Dom": "Welcome to Agri Dom",
+  "Your_centralized_hub_for_managing_your_agricultural_data": "Your centralized hub for managing your agricultural data.",
+  "Total_Parcels": "Total Parcels",
+  "Total_Crops": "Total Crops",
+  "Total_Revenue": "Total Revenue",
+  "Upcoming_Tasks": "Upcoming Tasks",
+  "Recent_Alerts": "Recent Alerts",
+  "Water_the_tomatoes_in_Parcel_A": "Water the tomatoes in Parcel A",
+  "Fertilize_the_cornfield": "Fertilize the cornfield",
+  "Check_for_pests_in_the_greenhouse": "Check for pests in the greenhouse",
+  "Heavy_rain_expected_tomorrow": "Heavy rain expected tomorrow",
+  "Low_inventory_for_fertilizer": "Low inventory for fertilizer",
+  "Aphid_infestation_detected_in_Parcel_B": "Aphid infestation detected in Parcel B"
 }

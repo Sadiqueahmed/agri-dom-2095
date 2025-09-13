@@ -6,5 +6,18 @@
   "Finance": "Finances",
   "Statistics": "Statistiques",
   "Reports": "Rapports",
-  "Settings": "Paramètres"
+  "Settings": "Paramètres",
+  "Welcome_to_Agri_Dom": "Bienvenue à Agri Dom",
+  "Your_centralized_hub_for_managing_your_agricultural_data": "Votre hub centralisé pour la gestion de vos données agricoles.",
+  "Total_Parcels": "Total des parcelles",
+  "Total_Crops": "Total des cultures",
+  "Total_Revenue": "Revenu total",
+  "Upcoming_Tasks": "Tâches à venir",
+  "Recent_Alerts": "Alertes récentes",
+  "Water_the_tomatoes_in_Parcel_A": "Arroser les tomates dans la parcelle A",
+  "Fertilize_the_cornfield": "Fertiliser le champ de maïs",
+  "Check_for_pests_in_the_greenhouse": "Vérifier la présence de parasites dans la serre",
+  "Heavy_rain_expected_tomorrow": "Fortes pluies attendues demain",
+  "Low_inventory_for_fertilizer": "Inventaire faible pour l'engrais",
+  "Aphid_infestation_detected_in_Parcel_B": "Infestation de pucerons détectée dans la parcelle B"
 }

@@ -6,5 +6,18 @@
   "Finance": "वित्त",
   "Statistics": "आंकड़े",
   "Reports": "रिपोर्ट",
-  "Settings": "सेटिंग्स"
+  "Settings": "सेटिंग्स",
+  "Welcome_to_Agri_Dom": "एग्री डोम में आपका स्वागत है",
+  "Your_centralized_hub_for_managing_your_agricultural_data": "आपके कृषि डेटा के प्रबंधन के लिए आपका केंद्रीकृत केंद्र।",
+  "Total_Parcels": "कुल पार्सल",
+  "Total_Crops": "कुल फसलें",
+  "Total_Revenue": "कुल राजस्व",
+  "Upcoming_Tasks": "आगामी कार्य",
+  "Recent_Alerts": "हाल के अलर्ट",
+  "Water_the_tomatoes_in_Parcel_A": "पार्सल ए में टमाटरों को पानी दें",
+  "Fertilize_the_cornfield": "मकई के खेत में खाद डालें",
+  "Check_for_pests_in_the_greenhouse": "ग्रीनहाउस में कीटों की जाँच करें",
+  "Heavy_rain_expected_tomorrow": "कल भारी बारिश की उम्मीद है",
+  "Low_inventory_for_fertilizer": "उर्वरक के लिए कम इन्वेंट्री",
+  "Aphid_infestation_detected_in_Parcel_B": "पार्सल बी में एफिड संक्रमण का पता चला"
 }
