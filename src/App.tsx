@@ -1,7 +1,8 @@
-
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 import Index from "./pages/Index";
 import ParcelsPage from "./pages/ParcelsPage";
 import ParcelsDetailsPage from "./pages/ParcelsDetailsPage";
@@ -63,26 +64,28 @@ const RouterChangeHandler = () => {
 // Application main component with properly nested providers
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppSettingsProvider>
-        <CRMProvider>
-          <BrowserRouter>
-            <TooltipProvider>
-              <RouterChangeHandler />
-              <Routes>
-                {routes.map((route) => (
-                  <Route 
-                    key={route.path} 
-                    path={route.path} 
-                    element={route.element} 
-                  />
-                ))}
-              </Routes>
-            </TooltipProvider>
-          </BrowserRouter>
-        </CRMProvider>
-      </AppSettingsProvider>
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <AppSettingsProvider>
+          <CRMProvider>
+            <BrowserRouter>
+              <TooltipProvider>
+                <RouterChangeHandler />
+                <Routes>
+                  {routes.map((route) => (
+                    <Route 
+                      key={route.path} 
+                      path={route.path} 
+                      element={route.element} 
+                    />
+                  ))}
+                </Routes>
+              </TooltipProvider>
+            </BrowserRouter>
+          </CRMProvider>
+        </AppSettingsProvider>
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 };
 

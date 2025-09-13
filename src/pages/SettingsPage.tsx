@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageLayout from '../components/layout/PageLayout';
 import PageHeader from '../components/layout/PageHeader';
 import usePageMetadata from '../hooks/use-page-metadata';
@@ -14,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 const SettingsPage = () => {
+  const { i18n } = useTranslation();
   const { 
     title, 
     description, 
@@ -40,9 +42,9 @@ const SettingsPage = () => {
 
   // Available locales
   const locales = [
-    { value: 'en-US', label: 'English (US)' },
-    { value: 'fr-FR', label: 'French (France)' },
-    { value: 'hi-IN', label: 'Hindi (India)' }
+    { value: 'en', label: 'English (US)' },
+    { value: 'fr', label: 'French (France)' },
+    { value: 'hi', label: 'Hindi (India)' }
   ];
 
   const handleDarkModeChange = (checked: boolean) => {
@@ -57,6 +59,7 @@ const SettingsPage = () => {
   };
 
   const handleLocaleChange = (value: string) => {
+    i18n.changeLanguage(value);
     updateSetting('locale', value);
   };
   
@@ -215,7 +218,7 @@ const SettingsPage = () => {
                 <div className="space-y-2">
                   <Label htmlFor="locale">Language & Region</Label>
                   <Select
-                    value={settings.locale}
+                    value={i18n.language}
                     onValueChange={handleLocaleChange}
                   >
                     <SelectTrigger id="locale" className="w-full">
