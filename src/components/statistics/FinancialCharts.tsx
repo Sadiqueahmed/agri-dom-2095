@@ -25,7 +25,7 @@ const FinancialCharts = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Profitability by parcel (€/ha)</CardTitle>
+          <CardTitle>Profitability by parcel (₹/acre)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[400px]">
@@ -45,8 +45,8 @@ const FinancialCharts = () => {
                   type="number" 
                   dataKey="profitability" 
                   name="Profitability" 
-                  unit=" €/ha" 
-                  label={{ value: 'Profitability (€/ha)', angle: -90, position: 'insideLeft' }} 
+                  unit=" ₹/acre" 
+                  label={{ value: 'Profitability (₹/acre)', angle: -90, position: 'insideLeft' }} 
                 />
                 <ZAxis 
                   type="category" 
@@ -57,8 +57,8 @@ const FinancialCharts = () => {
                 <Tooltip 
                   cursor={{ strokeDasharray: '3 3' }} 
                   formatter={(value, name, props) => {
-                    if (name === 'Profitability') return [`${value} €/ha`, name];
-                    if (name === 'Size') return [`${value} ha`, name];
+                    if (name === 'Profitability') return [`${value} /acre`, name];
+                    if (name === 'Size') return [`${value} /acre`, name];
                     return [value, name];
                   }}
                   content={({ active, payload }) => {
@@ -68,7 +68,7 @@ const FinancialCharts = () => {
                           <p className="font-medium">{payload[2]?.payload.name}</p>
                           <p>Crop: {payload[2]?.value}</p>
                           <p>Size: {payload[0]?.value} ha</p>
-                          <p>Profitability: {payload[1]?.value} €/ha</p>
+                          <p>Profitability: ₹{payload[1]?.value} /acre</p>
                         </div>
                       );
                     }
@@ -107,7 +107,7 @@ const FinancialCharts = () => {
                     tick={{ fontSize: 12 }} 
                     width={80} 
                   />
-                  <Tooltip formatter={(value) => [`${value.toLocaleString()} €`, 'Amount']} />
+                  <Tooltip formatter={(value) => [`₹${value.toLocaleString()} `, 'Amount']} />
                   <Bar 
                     dataKey="value" 
                     fill="#8D6E63" 
@@ -134,7 +134,7 @@ const FinancialCharts = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value) => [`${value.toLocaleString()} €`, '']} />
+                  <Tooltip formatter={(value) => [`₹${value.toLocaleString()} `, '']} />
                   <Legend />
                   <Line type="monotone" dataKey="revenue" name="Revenue" stroke="#4CAF50" activeDot={{ r: 8 }} />
                   <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#F44336" />

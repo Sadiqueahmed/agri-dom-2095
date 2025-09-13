@@ -20,7 +20,7 @@ export const formatDate = (date: Date | string): string => {
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
-    currency: 'EUR',
+    currency: 'INR',
     minimumFractionDigits: 2
   }).format(amount);
 };

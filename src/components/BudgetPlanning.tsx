@@ -201,11 +201,11 @@ const BudgetPlanning = () => {
               <div className="pt-4 space-y-2">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Planned Budget:</span>
-                  <span className="font-medium">{totalPlanned.toLocaleString()} €</span>
+                  <span className="font-medium">₹{totalPlanned.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Spent:</span>
-                  <span className="font-medium">{totalActual.toLocaleString()} €</span>
+                  <span className="font-medium">₹{totalActual.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t">
                   <span className="font-medium text-muted-foreground">Balance:</span>
@@ -214,7 +214,7 @@ const BudgetPlanning = () => {
                       totalPlanned - totalActual >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}
                   >
-                    {(totalPlanned - totalActual).toLocaleString()} €
+                    ₹{(totalPlanned - totalActual).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -300,14 +300,14 @@ const BudgetPlanning = () => {
                           {item.category}
                         </div>
                       </td>
-                      <td className="text-right py-3 px-4">{item.planned.toLocaleString()} €</td>
+                      <td className="text-right py-3 px-4">₹{item.planned.toLocaleString()}</td>
                       <td className="text-right py-3 px-4">
                         <Input
                           className="w-28 text-right py-1 px-2 h-auto inline-block"
                           value={item.actual}
                           onChange={(e) => handleUpdateActual(item.id, e.target.value)}
                         />
-                        €
+                        ₹
                       </td>
                       <td className="text-right py-3 px-4">
                         <div className="flex items-center justify-end">
@@ -375,7 +375,7 @@ const BudgetPlanning = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="planned">Planned Budget (€)</Label>
+              <Label htmlFor="planned">Planned Budget (₹)</Label>
               <Input 
                 id="planned" 
                 type="number" 
@@ -386,7 +386,7 @@ const BudgetPlanning = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="actual">Spent to Date (€) (optional)</Label>
+              <Label htmlFor="actual">Spent to Date (₹) (optional)</Label>
               <Input 
                 id="actual" 
                 type="number" 
