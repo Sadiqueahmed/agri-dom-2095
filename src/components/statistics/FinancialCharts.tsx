@@ -154,7 +154,7 @@ const FinancialCharts = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="border rounded-lg p-4">
               <p className="text-sm text-muted-foreground mb-1">EBITDA</p>
-              <p className="text-2xl font-semibold">€42,500</p>
+              <p className="text-2xl font-semibold">₹4,25,000</p>
               <p className="text-xs text-green-600">32% of revenue</p>
             </div>
             <div className="border rounded-lg p-4">

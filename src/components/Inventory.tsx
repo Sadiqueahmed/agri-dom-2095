@@ -504,7 +504,7 @@ const Inventory: React.FC<InventoryProps> = ({ dateRange, searchTerm: externalSe
 
   const tableData = filteredItems.map(item => ({
     ...item,
-    value: `${(item.quantity * item.price).toFixed(2)} €`,
+    value: `₹${(item.quantity * item.price).toFixed(2)} `,
     status: item.quantity <= item.minQuantity 
       ? item.quantity < item.minQuantity * 0.5 ? 'critical' : 'warning'
       : 'normal'
@@ -715,7 +715,7 @@ const Inventory: React.FC<InventoryProps> = ({ dateRange, searchTerm: externalSe
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis dataKey="name" />
                         <YAxis />
-                        <Tooltip formatter={(value) => [`${value} ${selectedItem.unit}`, '']} />
+                        <Tooltip formatter={(value) => [`₹${value} ${selectedItem.unit}`, '']} />
                         <Bar 
                           dataKey="value" 
                           fill="#4CAF50" 
@@ -986,7 +986,7 @@ const Inventory: React.FC<InventoryProps> = ({ dateRange, searchTerm: externalSe
                     />
                   </div>
                   <div>
-                    <Label htmlFor="price">Unit Price (€)</Label>
+                    <Label htmlFor="price">Unit Price (₹)</Label>
                     <Input
                       id="price"
                       type="number"
