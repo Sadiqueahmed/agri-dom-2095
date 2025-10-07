@@ -214,7 +214,7 @@ const FinancialTracking = () => {
                 <tr>
                   <td>${new Date(t.date).toLocaleDateString()}</td>
                   <td>${t.description}</td>
-                  <td class="${t.type === 'income' ? 'income' : 'expense'}">${t.amount.toFixed(2)} €</td>
+                  <td class="${t.type === 'income' ? 'income' : 'expense'}">${t.amount.toFixed(2)} ₹</td>
                   <td>${t.category}</td>
                   <td>${t.type === 'income' ? 'Income' : 'Expense'}</td>
                 </tr>
@@ -267,7 +267,7 @@ const FinancialTracking = () => {
             <CardDescription>Total expenses</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-red-600">{totalExpenses.toFixed(2)} €</p>
+            <p className="text-2xl font-bold text-red-600">{totalExpenses.toFixed(2)} ₹</p>
           </CardContent>
         </Card>
         

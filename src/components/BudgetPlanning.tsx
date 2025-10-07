@@ -250,7 +250,7 @@ const BudgetPlanning = () => {
                   </Pie>
                   <Legend />
                   <Tooltip 
-                    formatter={(value) => `${Number(value).toLocaleString()} €`}
+                    formatter={(value) => `${Number(value).toLocaleString()} ₹`}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -321,7 +321,7 @@ const BudgetPlanning = () => {
                         </div>
                       </td>
                       <td className={`text-right py-3 px-4 ${status === 'under' ? 'text-green-600' : 'text-red-600'}`}>
-                        {balance.toLocaleString()} €
+                        {balance.toLocaleString()} ₹
                       </td>
                       <td className="text-right py-3 px-4">
                         {status === 'under' ? (
