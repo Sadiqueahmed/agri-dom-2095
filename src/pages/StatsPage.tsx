@@ -10,6 +10,7 @@ import { BarChart, PieChart, TrendingUp, Download, Filter, RefreshCw, Bell, Prin
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import PreviewPrintButton from '@/components/common/PreviewPrintButton';
+import { YieldChart } from '@/components/dashboard/YieldChart';
 
 interface PerformanceData {
   name: string;
@@ -25,7 +26,7 @@ const StatsPage = () => {
   const [lastSyncDate, setLastSyncDate] = useState<Date>(new Date());
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [connectedModules, setConnectedModules] = useState<string[]>(['plots', 'crops', 'finances']);
-  
+
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([
     { name: 'Sugar Cane Yield', current: 75, target: 85, unit: 't/ha' },
     { name: 'Export Banana Quality', current: 88, target: 95, unit: '%' },
@@ -33,19 +34,19 @@ const StatsPage = () => {
     { name: 'Organic Certification', current: 25, target: 40, unit: '%' },
     { name: 'Yam Innovation', current: 60, target: 75, unit: '%' },
   ]);
-  
+
   useEffect(() => {
     const initialSync = setTimeout(() => {
       console.log('Plots, Crops, and Finances modules are now connected to statistics');
     }, 1000);
-    
+
     return () => clearTimeout(initialSync);
   }, []);
-  
+
   const syncData = () => {
     setIsSyncing(true);
     console.log('Retrieving latest data from all connected modules...');
-    
+
     setTimeout(() => {
       setIsSyncing(false);
       setLastSyncDate(new Date());
@@ -53,41 +54,41 @@ const StatsPage = () => {
       console.log("Performance indicators have been recalculated with the latest data");
     }, 2000);
   };
-  
+
   const columns: Column[] = [
     { id: 'name', header: 'Indicator', accessorKey: 'name', isEditable: true },
     { id: 'current', header: 'Current Value', accessorKey: 'current', type: 'number', isEditable: true },
     { id: 'target', header: 'Target', accessorKey: 'target', type: 'number', isEditable: true },
     { id: 'unit', header: 'Unit', accessorKey: 'unit', isEditable: true },
   ];
-  
+
   const handleTableUpdate = (rowIndex: number, columnId: string, value: any) => {
     const newData = [...performanceData];
     const updatedRow = { ...newData[rowIndex] } as PerformanceData;
-    
+
     if (columnId === 'current' || columnId === 'target') {
       updatedRow[columnId as 'current' | 'target'] = Number(value);
     } else if (columnId === 'name' || columnId === 'unit') {
       updatedRow[columnId as 'name' | 'unit'] = String(value);
     }
-    
+
     newData[rowIndex] = updatedRow;
     setPerformanceData(newData);
-    
+
     console.log(`Indicator ${updatedRow.name} has been successfully updated.`);
     console.log(`Connected modules have been notified of the update to ${updatedRow.name}`);
   };
-  
+
   const handleDeleteRow = (rowIndex: number) => {
     const newData = [...performanceData];
     const deletedItem = newData[rowIndex];
     newData.splice(rowIndex, 1);
     setPerformanceData(newData);
-    
+
     console.log(`Indicator ${deletedItem.name} has been successfully deleted.`);
     console.log(`Connected modules have been notified of the deletion of ${deletedItem.name}`);
   };
-  
+
   const handleAddRow = (newRow: Record<string, any>) => {
     const typedRow: PerformanceData = {
       name: String(newRow.name || ''),
@@ -96,7 +97,7 @@ const StatsPage = () => {
       unit: String(newRow.unit || '%'),
     };
     setPerformanceData([...performanceData, typedRow]);
-    
+
     console.log(`Indicator ${typedRow.name} has been successfully added.`);
     console.log(`Connected modules have been notified of the addition of ${typedRow.name}`);
   };
@@ -110,17 +111,16 @@ const StatsPage = () => {
     setPageDescription(String(value));
     console.log('Page description has been updated.');
   };
-  
+
   const handleViewChange = (view: 'performance' | 'harvest' | 'detailed') => {
     setActiveView(view);
-    console.log(`You are now viewing the ${
-      view === 'performance' ? 'Performance indicators' : 
-      view === 'harvest' ? 'Harvest tracking' : 'Detailed statistics'
-    } view`);
-    
+    console.log(`You are now viewing the ${view === 'performance' ? 'Performance indicators' :
+        view === 'harvest' ? 'Harvest tracking' : 'Detailed statistics'
+      } view`);
+
     console.log(`Connected modules have been adapted to the ${view === 'performance' ? 'indicators' : view === 'harvest' ? 'harvest' : 'detailed'} view`);
   };
-  
+
   const handleExportData = () => {
     console.log('Statistical data has been successfully exported.');
     console.log("Exported data is available for all modules");
@@ -130,14 +130,14 @@ const StatsPage = () => {
     <StatisticsProvider>
       <div className="flex h-screen overflow-hidden bg-background">
         <Navbar />
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
           className="flex-1 overflow-y-auto"
         >
           <div className="p-6 animate-enter">
-            <motion.header 
+            <motion.header
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
@@ -163,44 +163,41 @@ const StatsPage = () => {
                   <span>Last sync: {lastSyncDate.toLocaleString()}</span>
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap gap-2">
-                <button 
+                <button
                   onClick={() => handleViewChange('performance')}
-                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${
-                    activeView === 'performance' 
-                      ? 'bg-primary text-primary-foreground' 
+                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${activeView === 'performance'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-muted hover:bg-muted/80'
-                  }`}
+                    }`}
                 >
                   <PieChart className="h-4 w-4 mr-1.5" />
                   Indicators
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => handleViewChange('harvest')}
-                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${
-                    activeView === 'harvest' 
-                      ? 'bg-primary text-primary-foreground' 
+                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${activeView === 'harvest'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-muted hover:bg-muted/80'
-                  }`}
+                    }`}
                 >
                   <BarChart className="h-4 w-4 mr-1.5" />
                   Harvest
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => handleViewChange('detailed')}
-                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${
-                    activeView === 'detailed' 
-                      ? 'bg-primary text-primary-foreground' 
+                  className={`px-3 py-1.5 rounded-md flex items-center text-sm transition-colors ${activeView === 'detailed'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-muted hover:bg-muted/80'
-                  }`}
+                    }`}
                 >
                   <TrendingUp className="h-4 w-4 mr-1.5" />
                   Detailed
                 </button>
-                
+
                 <PreviewPrintButton
                   data={performanceData}
                   moduleName="performance-indicators"
@@ -214,16 +211,16 @@ const StatsPage = () => {
                   className="px-3 py-1.5 rounded-md flex items-center text-sm bg-muted hover:bg-muted/80 transition-colors"
                   variant="ghost"
                 />
-                
-                <button 
+
+                <button
                   onClick={handleExportData}
                   className="px-3 py-1.5 rounded-md flex items-center text-sm bg-muted hover:bg-muted/80 transition-colors"
                 >
                   <Download className="h-4 w-4 mr-1.5" />
                   Export
                 </button>
-                
-                <button 
+
+                <button
                   onClick={syncData}
                   className="px-3 py-1.5 rounded-md flex items-center text-sm bg-muted hover:bg-muted/80 transition-colors"
                   disabled={isSyncing}
@@ -231,8 +228,8 @@ const StatsPage = () => {
                   <RefreshCw className={`h-4 w-4 mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
                   {isSyncing ? 'Synchronizing...' : 'Synchronize'}
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     console.log('Your notification preferences have been updated');
                   }}
@@ -243,17 +240,17 @@ const StatsPage = () => {
                 </button>
               </div>
             </motion.header>
-            
+
             {activeView === 'performance' && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 className="mb-8"
               >
-                <ChartConfig 
-                          title="Agricultural performance indicators in India"
-        description="Track your performance against your targets for Indian crops"
+                <ChartConfig
+                  title="Agricultural performance indicators in India"
+                  description="Track your performance against your targets for Indian crops"
                   onTitleChange={(title) => {
                     console.log('Chart title has been updated.');
                   }}
@@ -265,7 +262,10 @@ const StatsPage = () => {
                   }}
                   className="mb-6"
                 >
-                  <div className="p-4">
+                  <YieldChart data={performanceData} />
+
+                  <div className="p-4 mt-6 border-t dark:border-slate-800">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-slate-200">Indicator Data</h3>
                     <EditableTable
                       data={performanceData}
                       columns={columns}
@@ -278,7 +278,7 @@ const StatsPage = () => {
                 </ChartConfig>
               </motion.div>
             )}
-            
+
             {activeView === 'harvest' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -288,7 +288,7 @@ const StatsPage = () => {
                 <IndianHarvestTracking />
               </motion.div>
             )}
-            
+
             {activeView === 'detailed' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

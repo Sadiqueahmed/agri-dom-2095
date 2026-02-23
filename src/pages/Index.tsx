@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PageLayout from '../components/layout/PageLayout';
 import Dashboard from '../components/Dashboard';
@@ -12,6 +11,8 @@ import { StatisticsProvider } from '../contexts/StatisticsContext';
 import { useCRM } from '../contexts/CRMContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { AIAssistant } from '@/components/dashboard/AIAssistant';
+import { exportElementToPDF } from '@/utils/pdfExport';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -149,22 +150,7 @@ const Index = () => {
 
   // Data manipulation
   const handleExportData = async (tab: string) => {
-    const moduleMapping: { [key: string]: string } = {
-      'dashboard': 'statistics',
-      'harvest': 'crops',
-      'weather': 'statistics',
-      'tasks': 'crops'
-    };
-
-    const module = moduleMapping[tab] || 'statistics';
-    const format = tab === 'dashboard' ? 'excel' : 'csv';
-
-    try {
-      await exportModuleData(module, format as 'csv' | 'excel' | 'pdf');
-      console.log(`Export of ${module} data in ${format} format started`);
-    } catch (error) {
-      console.error(`Error exporting ${module}:`, error);
-    }
+    await exportElementToPDF('dashboard-content', `Agridom-${tab.charAt(0).toUpperCase() + tab.slice(1)}-Report`);
   };
 
   const handleImportData = () => {
@@ -241,7 +227,7 @@ const Index = () => {
   return (
     <StatisticsProvider>
       <PageLayout>
-        <div className="p-6 animate-enter">
+        <div id="dashboard-content" className="p-6 animate-enter bg-slate-50 dark:bg-slate-950">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Agri Dom Dashboard</h1>

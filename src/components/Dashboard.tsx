@@ -29,6 +29,7 @@ import { EditableField } from './ui/editable-field';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Label } from './ui/label';
+import { NewsFeed } from '@/components/dashboard/NewsFeed';
 
 import PageHeader from './layout/PageHeader';
 import WeatherForecast from './WeatherForecast';
@@ -380,56 +381,63 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <div className="bg-white rounded-xl border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Revenue Trend</h3>
-            <Button variant="outline" size="sm" onClick={handleFinanceClick}>
-              <ArrowRight className="h-4 w-4 ml-2" />
-              View Details
-            </Button>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 space-y-6">
+          {/* Revenue Chart */}
+          <div className="bg-white rounded-xl border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Revenue Trend</h3>
+              <Button variant="outline" size="sm" onClick={handleFinanceClick}>
+                <ArrowRight className="h-4 w-4 ml-2" />
+                View Details
+              </Button>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis
+                  tickFormatter={(value) => `₹${value.toLocaleString()}`}
+                />
+                <Tooltip
+                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                  labelStyle={{ color: '#374151' }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#10B981"
+                  fill="#10B981"
+                  fillOpacity={0.3}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis
-                tickFormatter={(value) => `₹${value.toLocaleString()}`}
-              />
-              <Tooltip
-                formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
-                labelStyle={{ color: '#374151' }}
-              />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                stroke="#10B981"
-                fill="#10B981"
-                fillOpacity={0.3}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+
+          {/* Production Distribution */}
+          <div className="bg-white rounded-xl border p-6">
+            <h3 className="text-lg font-semibold mb-4">Production Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={productionData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar
+                  dataKey="value"
+                  fill="#8D6E63"
+                  radius={[0, 4, 4, 0]}
+                  barSize={20}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Production Distribution */}
-        <div className="bg-white rounded-xl border p-6">
-          <h3 className="text-lg font-semibold mb-4">Production Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={productionData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar
-                dataKey="value"
-                fill="#8D6E63"
-                radius={[0, 4, 4, 0]}
-                barSize={20}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* News Feed Sidebar */}
+        <div className="xl:col-span-1 h-[680px]">
+          <NewsFeed />
         </div>
       </div>
 
@@ -477,7 +485,7 @@ const Dashboard = () => {
               <div key={task.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-red-500' :
-                      task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                    task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
                     }`} />
                   {editingTask === task.id ? (
                     <div className="flex items-center space-x-2">
@@ -526,7 +534,7 @@ const Dashboard = () => {
               <div key={alert.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <div className={`w-2 h-2 rounded-full ${alert.type === 'warning' ? 'bg-yellow-500' :
-                      alert.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                    alert.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
                     }`} />
                   <span>{alert.message}</span>
                 </div>
@@ -630,10 +638,10 @@ const Dashboard = () => {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${alert.severity === 'critical'
-                        ? 'bg-red-100 text-red-800'
-                        : alert.severity === 'moderate'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
+                      ? 'bg-red-100 text-red-800'
+                      : alert.severity === 'moderate'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-green-100 text-green-800'
                       }`}>
                       <EditableField
                         value={alert.severity}
