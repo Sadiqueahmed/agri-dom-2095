@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sprout, ArrowRight, Activity, CloudSun, ShieldCheck, Globe } from 'lucide-react';
+import { Sprout, ArrowRight, Activity, CloudSun, ShieldCheck, Globe, Github, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -94,6 +94,37 @@ export default function LandingPage() {
                     </div>
                 </div>
             </main>
+
+            {/* Footer */}
+            <footer className="w-full mt-auto py-8 px-6 border-t border-emerald-100/50 bg-white/30 backdrop-blur-md relative z-10">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="text-emerald-800/80 text-sm font-medium">
+                        &copy; {new Date().getFullYear()} Agri Dom. Made by <span className="font-bold text-emerald-900">Sadique Ahmed</span>. All rights reserved.
+                    </div>
+                    <div className="flex items-center space-x-6">
+                        <a
+                            href="https://github.com/Sadiqueahmed"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-emerald-700/70 hover:text-emerald-900 transition-colors flex items-center gap-2 text-sm font-medium"
+                            aria-label="GitHub Profile"
+                        >
+                            <Github className="h-5 w-5" />
+                            <span>GitHub</span>
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/sadique-ahmed-b2039524b/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-emerald-700/70 hover:text-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+                            aria-label="LinkedIn Profile"
+                        >
+                            <Linkedin className="h-5 w-5" />
+                            <span>LinkedIn</span>
+                        </a>
+                    </div>
+                </div>
+            </footer>
 
             {/* Decorative Background Elements */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
