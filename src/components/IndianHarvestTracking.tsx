@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, Calendar, Download, Filter, PlusCircle, Arrow
 import { useToast } from "@/hooks/use-toast";
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "./ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { 
+import {
   Form,
   FormControl,
   FormField,
@@ -49,6 +49,64 @@ const harvestFormSchema = z.object({
   notes: z.string().optional(),
 });
 
+const initialHarvestRecords: HarvestRecord[] = [
+  {
+    id: 1,
+    date: '2024-06-15',
+    crop: 'Rice',
+    variety: 'Basmati',
+    quantity: 2500,
+    unit: 'kg',
+    quality: 'Excellent',
+    location: 'Punjab',
+    notes: 'Excellent harvest season with good grain quality'
+  },
+  {
+    id: 2,
+    date: '2024-06-20',
+    crop: 'Wheat',
+    variety: 'Durum',
+    quantity: 1800,
+    unit: 'kg',
+    quality: 'Good',
+    location: 'Haryana',
+    notes: 'Good yield despite late sowing'
+  },
+  {
+    id: 3,
+    date: '2024-06-25',
+    crop: 'Sugarcane',
+    variety: 'Co 86032',
+    quantity: 45,
+    unit: 'tonnes',
+    quality: 'Good',
+    location: 'Maharashtra',
+    notes: 'High sugar content this season'
+  },
+  {
+    id: 4,
+    date: '2024-06-28',
+    crop: 'Cotton',
+    variety: 'BT Cotton',
+    quantity: 1200,
+    unit: 'kg',
+    quality: 'Average',
+    location: 'Gujarat',
+    notes: 'Moderate yield due to pest pressure'
+  },
+  {
+    id: 5,
+    date: '2024-07-01',
+    crop: 'Pulses',
+    variety: 'Toor Dal',
+    quantity: 800,
+    unit: 'kg',
+    quality: 'Good',
+    location: 'Madhya Pradesh',
+    notes: 'Good harvest with minimal damage'
+  }
+];
+
 const IndianHarvestTracking = () => {
   const { toast } = useToast();
   const [title, setTitle] = useState('Harvest Tracking in India');
@@ -58,7 +116,7 @@ const IndianHarvestTracking = () => {
   const [filterQuality, setFilterQuality] = useState('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expandedRecordId, setExpandedRecordId] = useState<number | null>(null);
-  
+
   const form = useForm<z.infer<typeof harvestFormSchema>>({
     resolver: zodResolver(harvestFormSchema),
     defaultValues: {
@@ -72,64 +130,36 @@ const IndianHarvestTracking = () => {
       notes: '',
     },
   });
-  
-  const [harvestRecords, setHarvestRecords] = useState<HarvestRecord[]>([
-    {
-      id: 1,
-      date: '2024-06-15',
-      crop: 'Rice',
-      variety: 'Basmati',
-      quantity: 2500,
-      unit: 'kg',
-      quality: 'Excellent',
-      location: 'Punjab',
-      notes: 'Excellent harvest season with good grain quality'
-    },
-    {
-      id: 2,
-      date: '2024-06-20',
-      crop: 'Wheat',
-      variety: 'Durum',
-      quantity: 1800,
-      unit: 'kg',
-      quality: 'Good',
-      location: 'Haryana',
-      notes: 'Good yield despite late sowing'
-    },
-    {
-      id: 3,
-      date: '2024-06-25',
-      crop: 'Sugarcane',
-      variety: 'Co 86032',
-      quantity: 45,
-      unit: 'tonnes',
-      quality: 'Good',
-      location: 'Maharashtra',
-      notes: 'High sugar content this season'
-    },
-    {
-      id: 4,
-      date: '2024-06-28',
-      crop: 'Cotton',
-      variety: 'BT Cotton',
-      quantity: 1200,
-      unit: 'kg',
-      quality: 'Average',
-      location: 'Gujarat',
-      notes: 'Moderate yield due to pest pressure'
-    },
-    {
-      id: 5,
-      date: '2024-07-01',
-      crop: 'Pulses',
-      variety: 'Toor Dal',
-      quantity: 800,
-      unit: 'kg',
-      quality: 'Good',
-      location: 'Madhya Pradesh',
-      notes: 'Good harvest with minimal damage'
+
+  const HARVEST_STORAGE_KEY = 'agri-harvest-data';
+
+  const initHarvestFromStorage = <T,>(key: string, fallback: T): T => {
+    try {
+      const stored = localStorage.getItem(HARVEST_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed[key] !== undefined) {
+          return parsed[key];
+        }
+      }
+    } catch (e) {
+      console.error('Error reading harvest data from local storage', e);
     }
-  ]);
+    return fallback;
+  };
+
+  const [harvestRecords, setHarvestRecords] = useState<HarvestRecord[]>(() => initHarvestFromStorage('harvestRecords', initialHarvestRecords));
+
+  React.useEffect(() => {
+    try {
+      const dataToSave = {
+        harvestRecords
+      };
+      localStorage.setItem(HARVEST_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error('Failed to save harvest data', e);
+    }
+  }, [harvestRecords]);
 
   const columns: Column[] = [
     {
@@ -141,7 +171,7 @@ const IndianHarvestTracking = () => {
     },
     {
       id: 'crop',
-      header: 'Crop', 
+      header: 'Crop',
       accessorKey: 'crop',
       type: 'text',
       isEditable: true
@@ -149,7 +179,7 @@ const IndianHarvestTracking = () => {
     {
       id: 'variety',
       header: 'Variety',
-      accessorKey: 'variety', 
+      accessorKey: 'variety',
       type: 'text',
       isEditable: true
     },
@@ -170,7 +200,7 @@ const IndianHarvestTracking = () => {
     },
     {
       id: 'quality',
-      header: 'Quality', 
+      header: 'Quality',
       accessorKey: 'quality',
       type: 'select',
       options: ['Excellent', 'Good', 'Average', 'Poor'],
@@ -180,7 +210,7 @@ const IndianHarvestTracking = () => {
       id: 'location',
       header: 'Location',
       accessorKey: 'location',
-      type: 'text', 
+      type: 'text',
       isEditable: true
     },
     {
@@ -193,8 +223,8 @@ const IndianHarvestTracking = () => {
   ];
 
   const handleEditRecord = (id: number, field: keyof HarvestRecord, value: any) => {
-    setHarvestRecords(records => 
-      records.map(record => 
+    setHarvestRecords(records =>
+      records.map(record =>
         record.id === id ? { ...record, [field]: value } : record
       )
     );
@@ -220,7 +250,7 @@ const IndianHarvestTracking = () => {
       variety: values.variety || 'Unknown',
       quantity: values.quantity || 0,
       unit: values.unit || 'kg',
-      quality: values.quality || 'Good', 
+      quality: values.quality || 'Good',
       location: values.location || 'Unknown',
       notes: values.notes || '',
     };
@@ -235,11 +265,11 @@ const IndianHarvestTracking = () => {
 
   const filteredRecords = harvestRecords.filter(record => {
     const matchesSearch = record.crop.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         record.variety.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         record.location.toLowerCase().includes(searchTerm.toLowerCase());
+      record.variety.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCrop = filterCrop === 'all' || record.crop === filterCrop;
     const matchesQuality = filterQuality === 'all' || record.quality === filterQuality;
-    
+
     return matchesSearch && matchesCrop && matchesQuality;
   });
 
@@ -254,9 +284,9 @@ const IndianHarvestTracking = () => {
     return sum + qualityScores[record.quality as keyof typeof qualityScores];
   }, 0) / harvestRecords.length;
 
-  const qualityLabel = averageQuality >= 3.5 ? 'Excellent' : 
-                      averageQuality >= 2.5 ? 'Good' : 
-                      averageQuality >= 1.5 ? 'Average' : 'Poor';
+  const qualityLabel = averageQuality >= 3.5 ? 'Excellent' :
+    averageQuality >= 2.5 ? 'Good' :
+      averageQuality >= 1.5 ? 'Average' : 'Poor';
 
   return (
     <div className="space-y-6">
@@ -353,10 +383,10 @@ const IndianHarvestTracking = () => {
                       <FormItem>
                         <FormLabel>Quantity</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.1" 
-                            {...field} 
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
                             onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           />
                         </FormControl>
@@ -475,7 +505,7 @@ const IndianHarvestTracking = () => {
             <TrendingUp className="h-8 w-8 text-green-500" />
           </div>
         </div>
-        
+
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -485,7 +515,7 @@ const IndianHarvestTracking = () => {
             <Calendar className="h-8 w-8 text-blue-500" />
           </div>
         </div>
-        
+
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -524,7 +554,7 @@ const IndianHarvestTracking = () => {
                 <SelectItem value="Oilseeds">Oilseeds</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select value={filterQuality} onValueChange={setFilterQuality}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="All Quality" />

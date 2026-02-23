@@ -7,7 +7,7 @@ import IndianHarvestTracking from '../components/IndianHarvestTracking';
 import IndianWeatherAlerts from '../components/IndianWeatherAlerts';
 import TaskList from '../components/cultures/TaskList';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Download, Filter, RefreshCw, Upload, Printer } from 'lucide-react';
+import { PlusCircle, Download, Filter, RefreshCw, Upload, Printer, Github, Linkedin } from 'lucide-react';
 import { StatisticsProvider } from '../contexts/StatisticsContext';
 import { useCRM } from '../contexts/CRMContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -18,9 +18,9 @@ const Index = () => {
   const [userName, setUserName] = useState('Farmer');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
+
   // Utiliser le contexte CRM
-  const { 
+  const {
     lastSync,
     isRefreshing,
     syncDataAcrossCRM,
@@ -35,8 +35,8 @@ const Index = () => {
       case 'dashboard':
         return (
           <div className="flex flex-wrap gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex items-center gap-2 bg-white border-gray-200 hover:bg-gray-50 transition-colors"
               onClick={syncDataAcrossCRM}
             >
@@ -72,8 +72,8 @@ const Index = () => {
       case 'harvest':
         return (
           <div className="flex flex-wrap gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex items-center gap-2 bg-white border-gray-200 hover:bg-gray-50"
               onClick={() => handleExportData('harvest')}
             >
@@ -93,16 +93,16 @@ const Index = () => {
       case 'weather':
         return (
           <div className="flex flex-wrap gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex items-center gap-2 bg-white border-gray-200 hover:bg-gray-50"
               onClick={() => handleExportData('weather')}
             >
               <Download className="h-4 w-4 text-gray-600" />
               Export
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex items-center gap-2 bg-white border-gray-200 hover:bg-gray-50"
             >
               <Filter className="h-4 w-4 text-gray-600" />
@@ -113,7 +113,7 @@ const Index = () => {
       case 'tasks':
         return (
           <div className="flex flex-wrap gap-3">
-            <Button 
+            <Button
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
             >
               <PlusCircle className="h-4 w-4" />
@@ -149,16 +149,16 @@ const Index = () => {
 
   // Data manipulation
   const handleExportData = async (tab: string) => {
-    const moduleMapping: {[key: string]: string} = {
+    const moduleMapping: { [key: string]: string } = {
       'dashboard': 'statistics',
       'harvest': 'crops',
       'weather': 'statistics',
       'tasks': 'crops'
     };
-    
+
     const module = moduleMapping[tab] || 'statistics';
     const format = tab === 'dashboard' ? 'excel' : 'csv';
-    
+
     try {
       await exportModuleData(module, format as 'csv' | 'excel' | 'pdf');
       console.log(`Export of ${module} data in ${format} format started`);
@@ -176,23 +176,23 @@ const Index = () => {
       console.error("No file selected");
       return;
     }
-    
+
     const moduleMapping = {
       'dashboard': 'statistics',
       'harvest': 'crops',
       'weather': 'statistics',
       'tasks': 'crops'
     };
-    
+
     const module = moduleMapping[activeTab] || 'statistics';
-    
+
     try {
       await importModuleData(module, selectedFile);
       console.log(`Import of file ${selectedFile.name} successful`);
     } catch (error) {
       console.error(`Error importing ${module}:`, error);
     }
-    
+
     setImportDialogOpen(false);
     setSelectedFile(null);
   };
@@ -204,9 +204,9 @@ const Index = () => {
       'weather': 'statistics',
       'tasks': 'crops'
     };
-    
+
     const module = moduleMapping[tab] || 'statistics';
-    
+
     try {
       await printModuleData(module);
       console.log(`Print of ${module} data started`);
@@ -224,12 +224,12 @@ const Index = () => {
     {
       value: 'harvest',
       label: 'Harvest Tracking',
-              content: <IndianHarvestTracking />
+      content: <IndianHarvestTracking />
     },
     {
       value: 'weather',
       label: 'Weather Alerts',
-              content: <IndianWeatherAlerts />
+      content: <IndianWeatherAlerts />
     },
     {
       value: 'tasks',
@@ -251,13 +251,13 @@ const Index = () => {
             </div>
             {getTabActions()}
           </div>
-          
-          <TabContainer 
+
+          <TabContainer
             tabs={tabs}
             defaultValue={activeTab}
             onValueChange={handleTabChange}
           />
-          
+
           <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
@@ -266,16 +266,16 @@ const Index = () => {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="file">CSV File</Label>
-                  <input 
-                    type="file" 
-                    id="file" 
-                    accept=".csv" 
+                  <input
+                    type="file"
+                    id="file"
+                    accept=".csv"
                     onChange={(e) => setSelectedFile(e.target.files ? e.target.files[0] : null)}
                     className="w-full border border-input bg-background px-3 py-2 text-sm rounded-md"
                   />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Data will be imported into the current module. 
+                  Data will be imported into the current module.
                   Make sure the file is in CSV format.
                 </p>
               </div>
@@ -285,6 +285,35 @@ const Index = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          {/* Owner Footer */}
+          <footer className="mt-12 pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
+            <div className="mb-4 md:mb-0">
+              <p className="font-medium">Owner: <span className="text-gray-900 font-semibold">Sadique Ahmed</span></p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <a
+                href="https://github.com/Sadiqueahmed"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center hover:text-gray-900 transition-colors"
+                aria-label="GitHub Profile"
+              >
+                <Github className="h-5 w-5 mr-1" />
+                <span>GitHub</span>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/sadiqueahmed/"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center hover:text-blue-600 transition-colors"
+                aria-label="LinkedIn Profile"
+              >
+                <Linkedin className="h-5 w-5 mr-1" />
+                <span>LinkedIn</span>
+              </a>
+            </div>
+          </footer>
         </div>
       </PageLayout>
     </StatisticsProvider>

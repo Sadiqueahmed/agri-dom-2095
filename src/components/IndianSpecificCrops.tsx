@@ -5,7 +5,7 @@ import { Sprout, TrendingUp, TrendingDown, Calendar, PlusCircle, ArrowDown, Arro
 import { useToast } from "@/hooks/use-toast";
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "./ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { 
+import {
   Form,
   FormControl,
   FormField,
@@ -53,6 +53,87 @@ const cropFormSchema = z.object({
   notes: z.string().optional(),
 });
 
+const initialCropsData: CropData[] = [
+  {
+    id: 1,
+    name: 'Rice',
+    variety: 'Basmati',
+    season: 'Kharif',
+    region: 'Punjab',
+    area: 25,
+    unit: 'hectares',
+    expectedYield: 75,
+    yieldUnit: 'tonnes',
+    status: 'Growing',
+    notes: 'Premium quality Basmati rice, excellent for export'
+  },
+  {
+    id: 2,
+    name: 'Wheat',
+    variety: 'Durum',
+    season: 'Rabi',
+    region: 'Haryana',
+    area: 30,
+    unit: 'hectares',
+    expectedYield: 90,
+    yieldUnit: 'tonnes',
+    status: 'Harvested',
+    notes: 'Good yield despite late sowing, quality is excellent'
+  },
+  {
+    id: 3,
+    name: 'Sugarcane',
+    variety: 'Co 86032',
+    season: 'Kharif',
+    region: 'Maharashtra',
+    area: 15,
+    unit: 'hectares',
+    expectedYield: 600,
+    yieldUnit: 'tonnes',
+    status: 'Growing',
+    notes: 'High sugar content variety, suitable for jaggery production'
+  },
+  {
+    id: 4,
+    name: 'Cotton',
+    variety: 'BT Cotton',
+    season: 'Kharif',
+    region: 'Gujarat',
+    area: 20,
+    unit: 'hectares',
+    expectedYield: 24,
+    yieldUnit: 'quintals',
+    status: 'Growing',
+    notes: 'BT variety with good pest resistance'
+  },
+  {
+    id: 5,
+    name: 'Pulses',
+    variety: 'Toor Dal',
+    season: 'Kharif',
+    region: 'Madhya Pradesh',
+    area: 12,
+    unit: 'hectares',
+    expectedYield: 18,
+    yieldUnit: 'quintals',
+    status: 'Planned',
+    notes: 'Planning for next season, good market demand'
+  },
+  {
+    id: 6,
+    name: 'Maize',
+    variety: 'Hybrid',
+    season: 'Kharif',
+    region: 'Karnataka',
+    area: 18,
+    unit: 'hectares',
+    expectedYield: 54,
+    yieldUnit: 'tonnes',
+    status: 'Growing',
+    notes: 'Hybrid variety with high yield potential'
+  }
+];
+
 const IndianSpecificCrops = () => {
   const { toast } = useToast();
   const [title, setTitle] = useState('Indian Specific Crops');
@@ -61,7 +142,7 @@ const IndianSpecificCrops = () => {
   const [filterSeason, setFilterSeason] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [dialogOpen, setDialogOpen] = useState(false);
-  
+
   const form = useForm<z.infer<typeof cropFormSchema>>({
     resolver: zodResolver(cropFormSchema),
     defaultValues: {
@@ -77,87 +158,36 @@ const IndianSpecificCrops = () => {
       notes: '',
     },
   });
-  
-  const [cropsData, setCropsData] = useState<CropData[]>([
-    {
-      id: 1,
-      name: 'Rice',
-      variety: 'Basmati',
-      season: 'Kharif',
-      region: 'Punjab',
-      area: 25,
-      unit: 'hectares',
-      expectedYield: 75,
-      yieldUnit: 'tonnes',
-      status: 'Growing',
-      notes: 'Premium quality Basmati rice, excellent for export'
-    },
-    {
-      id: 2,
-      name: 'Wheat',
-      variety: 'Durum',
-      season: 'Rabi',
-      region: 'Haryana',
-      area: 30,
-      unit: 'hectares',
-      expectedYield: 90,
-      yieldUnit: 'tonnes',
-      status: 'Harvested',
-      notes: 'Good yield despite late sowing, quality is excellent'
-    },
-    {
-      id: 3,
-      name: 'Sugarcane',
-      variety: 'Co 86032',
-      season: 'Kharif',
-      region: 'Maharashtra',
-      area: 15,
-      unit: 'hectares',
-      expectedYield: 600,
-      yieldUnit: 'tonnes',
-      status: 'Growing',
-      notes: 'High sugar content variety, suitable for jaggery production'
-    },
-    {
-      id: 4,
-      name: 'Cotton',
-      variety: 'BT Cotton',
-      season: 'Kharif',
-      region: 'Gujarat',
-      area: 20,
-      unit: 'hectares',
-      expectedYield: 24,
-      yieldUnit: 'quintals',
-      status: 'Growing',
-      notes: 'BT variety with good pest resistance'
-    },
-    {
-      id: 5,
-      name: 'Pulses',
-      variety: 'Toor Dal',
-      season: 'Kharif',
-      region: 'Madhya Pradesh',
-      area: 12,
-      unit: 'hectares',
-      expectedYield: 18,
-      yieldUnit: 'quintals',
-      status: 'Planned',
-      notes: 'Planning for next season, good market demand'
-    },
-    {
-      id: 6,
-      name: 'Maize',
-      variety: 'Hybrid',
-      season: 'Kharif',
-      region: 'Karnataka',
-      area: 18,
-      unit: 'hectares',
-      expectedYield: 54,
-      yieldUnit: 'tonnes',
-      status: 'Growing',
-      notes: 'Hybrid variety with high yield potential'
+
+  const CROPS_STORAGE_KEY = 'agri-crops-data';
+
+  const initCropsFromStorage = <T,>(key: string, fallback: T): T => {
+    try {
+      const stored = localStorage.getItem(CROPS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed[key] !== undefined) {
+          return parsed[key];
+        }
+      }
+    } catch (e) {
+      console.error('Error reading crops data from local storage', e);
     }
-  ]);
+    return fallback;
+  };
+
+  const [cropsData, setCropsData] = useState<CropData[]>(() => initCropsFromStorage('cropsData', initialCropsData));
+
+  React.useEffect(() => {
+    try {
+      const dataToSave = {
+        cropsData
+      };
+      localStorage.setItem(CROPS_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error('Failed to save crops data', e);
+    }
+  }, [cropsData]);
 
   const columns: Column[] = [
     {
@@ -221,8 +251,8 @@ const IndianSpecificCrops = () => {
   ];
 
   const handleEditCrop = (id: number, field: keyof CropData, value: any) => {
-    setCropsData(crops => 
-      crops.map(crop => 
+    setCropsData(crops =>
+      crops.map(crop =>
         crop.id === id ? { ...crop, [field]: value } : crop
       )
     );
@@ -265,11 +295,11 @@ const IndianSpecificCrops = () => {
 
   const filteredCrops = cropsData.filter(crop => {
     const matchesSearch = crop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         crop.variety.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         crop.region.toLowerCase().includes(searchTerm.toLowerCase());
+      crop.variety.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      crop.region.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSeason = filterSeason === 'all' || crop.season === filterSeason;
     const matchesStatus = filterStatus === 'all' || crop.status === filterStatus;
-    
+
     return matchesSearch && matchesSeason && matchesStatus;
   });
 
@@ -282,9 +312,9 @@ const IndianSpecificCrops = () => {
   const harvestedCrops = cropsData.filter(crop => crop.status === 'Harvested').length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" >
       {/* Header */}
-      <div className="flex justify-between items-start">
+      < div className="flex justify-between items-start" >
         <div>
           <h1 className="text-2xl font-bold mb-2">
             <EditableField
@@ -359,7 +389,7 @@ const IndianSpecificCrops = () => {
                     )}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -422,10 +452,10 @@ const IndianSpecificCrops = () => {
                       <FormItem>
                         <FormLabel>Area</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.1" 
-                            {...field} 
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
                             onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           />
                         </FormControl>
@@ -464,10 +494,10 @@ const IndianSpecificCrops = () => {
                       <FormItem>
                         <FormLabel>Expected Yield</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.1" 
-                            {...field} 
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
                             onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           />
                         </FormControl>
@@ -547,10 +577,10 @@ const IndianSpecificCrops = () => {
             </Form>
           </DialogContent>
         </Dialog>
-      </div>
+      </div >
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      < div className="grid grid-cols-1 md:grid-cols-3 gap-6" >
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -560,7 +590,7 @@ const IndianSpecificCrops = () => {
             <Sprout className="h-8 w-8 text-green-500" />
           </div>
         </div>
-        
+
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -570,7 +600,7 @@ const IndianSpecificCrops = () => {
             <TrendingUp className="h-8 w-8 text-blue-500" />
           </div>
         </div>
-        
+
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -580,10 +610,10 @@ const IndianSpecificCrops = () => {
             <TrendingDown className="h-8 w-8 text-yellow-500" />
           </div>
         </div>
-      </div>
+      </div >
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-xl border p-6">
+      < div className="bg-white rounded-xl border p-6" >
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1">
             <Input
@@ -605,7 +635,7 @@ const IndianSpecificCrops = () => {
                 <SelectItem value="Zaid">Zaid</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="All Status" />
@@ -629,8 +659,8 @@ const IndianSpecificCrops = () => {
           onDelete={handleDeleteCrop}
           className="w-full"
         />
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

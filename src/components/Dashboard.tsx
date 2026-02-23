@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  AlertTriangle, 
-  Sprout, 
-  CloudRain, 
+import {
+  BarChart3,
+  TrendingUp,
+  AlertTriangle,
+  Sprout,
+  CloudRain,
   Sun,
   Droplet,
   Wind,
@@ -67,60 +67,107 @@ const initialAlerts = [
 
 // Weather alerts data - Adapted for Indian regions
 const initialWeatherAlerts = [
-  { 
-    id: 1, 
-    type: 'Monsoon', 
-    region: 'Maharashtra', 
-    startDate: '2023-09-10', 
-    endDate: '2023-09-12', 
-    severity: 'moderate', 
-    description: 'Heavy monsoon rains expected' 
+  {
+    id: 1,
+    type: 'Monsoon',
+    region: 'Maharashtra',
+    startDate: '2023-09-10',
+    endDate: '2023-09-12',
+    severity: 'moderate',
+    description: 'Heavy monsoon rains expected'
   },
-  { 
-    id: 2, 
-    type: 'Drought', 
-    region: 'Rajasthan', 
-    startDate: '2023-09-20', 
-    endDate: '2023-09-23', 
-    severity: 'critical', 
-    description: 'Extended dry spell affecting crops' 
+  {
+    id: 2,
+    type: 'Drought',
+    region: 'Rajasthan',
+    startDate: '2023-09-20',
+    endDate: '2023-09-23',
+    severity: 'critical',
+    description: 'Extended dry spell affecting crops'
   }
 ];
 
 const Dashboard = () => {
-  // State for editable content
-  const [title, setTitle] = useState('Hello, Indian Farmer');
-  const [description, setDescription] = useState('Here is an overview of your agricultural operation in India');
+  // Storage key
+  const DASHBOARD_STORAGE_KEY = 'agri-dashboard-data';
+
+  // Helper to init state from local storage or fallback
+  const initFromStorage = <T,>(key: string, fallback: T): T => {
+    try {
+      const stored = localStorage.getItem(DASHBOARD_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed[key] !== undefined) {
+          return parsed[key];
+        }
+      }
+    } catch (e) {
+      console.error('Error reading dashboard data from local storage', e);
+    }
+    return fallback;
+  };
+
+  // State for editable content - Initialized from storage
+  const [title, setTitle] = useState(() => initFromStorage('title', 'Hello, Indian Farmer'));
+  const [description, setDescription] = useState(() => initFromStorage('description', 'Here is an overview of your agricultural operation in India'));
   const [currentMonth, setCurrentMonth] = useState('August 2023');
-  
+
   // Stats cards
-  const [monthlyRevenue, setMonthlyRevenue] = useState(154500);
-  const [revenueGrowth, setRevenueGrowth] = useState(8.5);
-  const [cultivatedArea, setCultivatedArea] = useState(35);
-  const [parcelsCount, setParcelsCount] = useState(5);
-  const [averageYield, setAverageYield] = useState(75);
-  const [yieldGrowth, setYieldGrowth] = useState(5.2);
-  const [alertsCount, setAlertsCount] = useState(3);
-  
+  const [monthlyRevenue, setMonthlyRevenue] = useState(() => initFromStorage('monthlyRevenue', 154500));
+  const [revenueGrowth, setRevenueGrowth] = useState(() => initFromStorage('revenueGrowth', 8.5));
+  const [cultivatedArea, setCultivatedArea] = useState(() => initFromStorage('cultivatedArea', 35));
+  const [parcelsCount, setParcelsCount] = useState(() => initFromStorage('parcelsCount', 5));
+  const [averageYield, setAverageYield] = useState(() => initFromStorage('averageYield', 75));
+  const [yieldGrowth, setYieldGrowth] = useState(() => initFromStorage('yieldGrowth', 5.2));
+
   // Farm locations for weather forecasts
   const farmLocations = [
     { id: 1, name: 'Main Farm', location: 'Maharashtra, India' },
     { id: 2, name: 'Northern Fields', location: 'Punjab, India' },
     { id: 3, name: 'Southern Plantation', location: 'Tamil Nadu, India' }
   ];
-  
+
   const [selectedLocation, setSelectedLocation] = useState(farmLocations[0].location);
-  const [weatherAlertsCount, setWeatherAlertsCount] = useState(2);
-  
-  // Lists
-  const [upcomingTasks, setUpcomingTasks] = useState(initialUpcomingTasks);
-  const [alerts, setAlerts] = useState(initialAlerts);
-  const [weatherAlerts, setWeatherAlerts] = useState(initialWeatherAlerts);
-  
+
+  // Lists - Initialized from storage
+  const [upcomingTasks, setUpcomingTasks] = useState(() => initFromStorage('upcomingTasks', initialUpcomingTasks));
+  const [alerts, setAlerts] = useState(() => initFromStorage('alerts', initialAlerts));
+  const [weatherAlerts, setWeatherAlerts] = useState(() => initFromStorage('weatherAlerts', initialWeatherAlerts));
+
+  // Derived state
+  const alertsCount = alerts.length;
+  const weatherAlertsCount = weatherAlerts.length;
+
+  // Save to local storage whenever critical data changes
+  React.useEffect(() => {
+    try {
+      const dataToSave = {
+        title,
+        description,
+        monthlyRevenue,
+        revenueGrowth,
+        cultivatedArea,
+        parcelsCount,
+        averageYield,
+        yieldGrowth,
+        upcomingTasks,
+        alerts,
+        weatherAlerts
+      };
+      localStorage.setItem(DASHBOARD_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error('Failed to save dashboard data', e);
+    }
+  }, [
+    title, description, monthlyRevenue, revenueGrowth,
+    cultivatedArea, parcelsCount, averageYield, yieldGrowth,
+    upcomingTasks, alerts, weatherAlerts
+  ]);
+
   // Dialog states
   const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
   const [showAddAlertDialog, setShowAddAlertDialog] = useState(false);
-  
+
   // Form states
   const [newTask, setNewTask] = useState({ title: '', due: '', priority: 'medium' });
   const [newAlert, setNewAlert] = useState({
@@ -132,7 +179,7 @@ const Dashboard = () => {
     endDate: '',
     description: ''
   });
-  
+
   // Editing states
   const [editingTask, setEditingTask] = useState<number | null>(null);
   const [editedTaskTitle, setEditedTaskTitle] = useState('');
@@ -186,7 +233,7 @@ const Dashboard = () => {
 
   const handleSaveTaskEdit = (id: number) => {
     if (editedTaskTitle.trim()) {
-      setUpcomingTasks(upcomingTasks.map(task => 
+      setUpcomingTasks(upcomingTasks.map(task =>
         task.id === id ? { ...task, title: editedTaskTitle } : task
       ));
       setEditingTask(null);
@@ -348,18 +395,18 @@ const Dashboard = () => {
             <AreaChart data={revenueData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
-              <YAxis 
+              <YAxis
                 tickFormatter={(value) => `₹${value.toLocaleString()}`}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
                 labelStyle={{ color: '#374151' }}
               />
-              <Area 
-                type="monotone" 
-                dataKey="revenue" 
-                stroke="#10B981" 
-                fill="#10B981" 
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                stroke="#10B981"
+                fill="#10B981"
                 fillOpacity={0.3}
               />
             </AreaChart>
@@ -375,24 +422,24 @@ const Dashboard = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar 
-                dataKey="value" 
-                fill="#8D6E63" 
-                radius={[0, 4, 4, 0]} 
+              <Bar
+                dataKey="value"
+                fill="#8D6E63"
+                radius={[0, 4, 4, 0]}
                 barSize={20}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
-      
+
       {/* Weather Forecast Section */}
       <div className="mb-6 bg-white rounded-xl border p-6 mt-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Weather Forecast</h3>
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-gray-500" />
-            <Select 
+            <Select
               value={selectedLocation}
               onValueChange={setSelectedLocation}
             >
@@ -429,10 +476,9 @@ const Dashboard = () => {
             {upcomingTasks.map((task) => (
               <div key={task.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    task.priority === 'high' ? 'bg-red-500' : 
-                    task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                  }`} />
+                  <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-red-500' :
+                      task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                    }`} />
                   {editingTask === task.id ? (
                     <div className="flex items-center space-x-2">
                       <Input
@@ -479,10 +525,9 @@ const Dashboard = () => {
             {alerts.map((alert) => (
               <div key={alert.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    alert.type === 'warning' ? 'bg-yellow-500' : 
-                    alert.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-                  }`} />
+                  <div className={`w-2 h-2 rounded-full ${alert.type === 'warning' ? 'bg-yellow-500' :
+                      alert.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                    }`} />
                   <span>{alert.message}</span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => handleDeleteAlert(alert.id)}>
@@ -546,7 +591,7 @@ const Dashboard = () => {
                     <EditableField
                       value={alert.region}
                       onSave={(value) => {
-                        setWeatherAlerts(weatherAlerts.map(a => 
+                        setWeatherAlerts(weatherAlerts.map(a =>
                           a.id === alert.id ? { ...a, region: String(value) } : a
                         ));
                         toast.success('Region updated');
@@ -561,7 +606,7 @@ const Dashboard = () => {
                           value={alert.startDate}
                           type="date"
                           onSave={(value) => {
-                            setWeatherAlerts(weatherAlerts.map(a => 
+                            setWeatherAlerts(weatherAlerts.map(a =>
                               a.id === alert.id ? { ...a, startDate: String(value) } : a
                             ));
                             toast.success('Start date updated');
@@ -574,7 +619,7 @@ const Dashboard = () => {
                           value={alert.endDate}
                           type="date"
                           onSave={(value) => {
-                            setWeatherAlerts(weatherAlerts.map(a => 
+                            setWeatherAlerts(weatherAlerts.map(a =>
                               a.id === alert.id ? { ...a, endDate: String(value) } : a
                             ));
                             toast.success('End date updated');
@@ -584,17 +629,16 @@ const Dashboard = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                      alert.severity === 'critical' 
-                        ? 'bg-red-100 text-red-800' 
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${alert.severity === 'critical'
+                        ? 'bg-red-100 text-red-800'
                         : alert.severity === 'moderate'
                           ? 'bg-yellow-100 text-yellow-800'
                           : 'bg-green-100 text-green-800'
-                    }`}>
+                      }`}>
                       <EditableField
                         value={alert.severity}
                         onSave={(value) => {
-                          setWeatherAlerts(weatherAlerts.map(a => 
+                          setWeatherAlerts(weatherAlerts.map(a =>
                             a.id === alert.id ? { ...a, severity: String(value) } : a
                           ));
                           toast.success('Severity updated');
@@ -606,7 +650,7 @@ const Dashboard = () => {
                     <EditableField
                       value={alert.description}
                       onSave={(value) => {
-                        setWeatherAlerts(weatherAlerts.map(a => 
+                        setWeatherAlerts(weatherAlerts.map(a =>
                           a.id === alert.id ? { ...a, description: String(value) } : a
                         ));
                         toast.success('Description updated');
@@ -614,8 +658,8 @@ const Dashboard = () => {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
                       onClick={() => handleDeleteWeatherAlert(alert.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-100"
@@ -644,7 +688,7 @@ const Dashboard = () => {
               <Input
                 id="taskTitle"
                 value={newTask.title}
-                onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -656,7 +700,7 @@ const Dashboard = () => {
                 id="dueDate"
                 type="date"
                 value={newTask.due}
-                onChange={(e) => setNewTask({...newTask, due: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, due: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -667,7 +711,7 @@ const Dashboard = () => {
               <select
                 id="priority"
                 value={newTask.priority}
-                onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="low">Low</option>
@@ -697,7 +741,7 @@ const Dashboard = () => {
               <Input
                 id="alertMessage"
                 value={newAlert.message}
-                onChange={(e) => setNewAlert({...newAlert, message: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, message: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -708,7 +752,7 @@ const Dashboard = () => {
               <select
                 id="alertType"
                 value={newAlert.type}
-                onChange={(e) => setNewAlert({...newAlert, type: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, type: e.target.value })}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="warning">Warning</option>
@@ -738,7 +782,7 @@ const Dashboard = () => {
               <select
                 id="alertType"
                 value={newAlert.type}
-                onChange={(e) => setNewAlert({...newAlert, type: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, type: e.target.value })}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="Monsoon">Monsoon</option>
@@ -755,7 +799,7 @@ const Dashboard = () => {
               <Input
                 id="region"
                 value={newAlert.region}
-                onChange={(e) => setNewAlert({...newAlert, region: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, region: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -767,7 +811,7 @@ const Dashboard = () => {
                 id="startDate"
                 type="date"
                 value={newAlert.startDate}
-                onChange={(e) => setNewAlert({...newAlert, startDate: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, startDate: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -779,7 +823,7 @@ const Dashboard = () => {
                 id="endDate"
                 type="date"
                 value={newAlert.endDate}
-                onChange={(e) => setNewAlert({...newAlert, endDate: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, endDate: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -790,7 +834,7 @@ const Dashboard = () => {
               <select
                 id="severity"
                 value={newAlert.severity}
-                onChange={(e) => setNewAlert({...newAlert, severity: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, severity: e.target.value })}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="low">Low</option>
@@ -805,7 +849,7 @@ const Dashboard = () => {
               <Input
                 id="description"
                 value={newAlert.description}
-                onChange={(e) => setNewAlert({...newAlert, description: e.target.value})}
+                onChange={(e) => setNewAlert({ ...newAlert, description: e.target.value })}
                 className="col-span-3"
               />
             </div>

@@ -4,18 +4,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { CloudRain, Sun, Wind, Droplet, CloudSnow, CloudLightning, CloudDrizzle, Cloud } from 'lucide-react';
 import { Button } from './ui/button';
 import { useWeatherForecast, WeatherData } from '../utils/weatherService';
+import { useAppSettings } from '../contexts/AppSettingsContext';
+import { formatTemperature, formatDistance } from '../utils/units';
 
 interface WeatherForecastProps {
   location?: string;
   days?: number;
 }
 
-const WeatherForecast: React.FC<WeatherForecastProps> = ({ 
-  location = 'Current Location', 
-  days = 5 
+const WeatherForecast: React.FC<WeatherForecastProps> = ({
+  location = 'Current Location',
+  days = 5
 }) => {
   const { forecast, isLoading, error } = useWeatherForecast(location, days);
   const [activeTab, setActiveTab] = useState<string>('daily');
+  const { settings } = useAppSettings();
 
   // Get weather icon based on condition
   const getWeatherIcon = (iconName: string) => {
@@ -60,8 +63,8 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
         <CardContent>
           <div className="text-center py-8">
             <p className="text-red-500">{error}</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mt-4"
               onClick={() => {
                 // Refresh will happen automatically through the hook
@@ -97,7 +100,9 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
                 <div key={index} className="text-center p-2 rounded-lg hover:bg-accent transition-colors">
                   <p className="text-sm font-medium">{day.date}</p>
                   <div className="my-2">{getWeatherIcon(day.icon)}</div>
-                  <p className="text-lg font-bold">{day.temp}°C</p>
+                  <p className="text-lg font-bold">
+                    {formatTemperature(day.temp, settings.units.temperature)}
+                  </p>
                   <p className="text-xs text-muted-foreground">{day.condition}</p>
                 </div>
               ))}
@@ -121,7 +126,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
                     </div>
                     <div className="flex items-center gap-1">
                       <Wind className="h-4 w-4 text-gray-500" />
-                      <span>{day.windSpeed} km/h</span>
+                      <span>{formatDistance(day.windSpeed, settings.units.distance)}/h</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <CloudRain className="h-4 w-4 text-blue-400" />
@@ -129,7 +134,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
                     </div>
                   </div>
                   <div className="text-xl font-bold">
-                    {day.temp}°C
+                    {formatTemperature(day.temp, settings.units.temperature)}
                   </div>
                 </div>
               ))}

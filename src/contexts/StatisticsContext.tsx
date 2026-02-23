@@ -33,7 +33,7 @@ interface StatisticsContextType {
   // Yield data
   yieldData: YieldData[];
   setYieldData: React.Dispatch<React.SetStateAction<YieldData[]>>;
-  
+
   // Financial data
   financialData: {
     profitabilityByParcel: FinancialData[];
@@ -45,7 +45,7 @@ interface StatisticsContextType {
     costAnalysis: CostData[];
     revenueByMonth: any[];
   }>>;
-  
+
   // Environmental data
   environmentalData: {
     indicators: EnvironmentalData[];
@@ -59,17 +59,17 @@ interface StatisticsContextType {
     waterUsage: number;
     biodiversity: number;
   }>>;
-  
+
   // Forecast data
   forecastData: any[];
   setForecastData: React.Dispatch<React.SetStateAction<any[]>>;
-  
+
   // Period and filters
   period: 'day' | 'week' | 'month' | 'year';
   setPeriod: React.Dispatch<React.SetStateAction<'day' | 'week' | 'month' | 'year'>>;
   cropFilter: string;
   setCropFilter: React.Dispatch<React.SetStateAction<string>>;
-  
+
   // Function to update data based on filters
   updateDataWithFilters: (period: string, crop: string) => void;
 }
@@ -134,30 +134,63 @@ const initialEnvironmentalIndicators: EnvironmentalData[] = [
   { indicator: 'Biodiversity (species/ha)', current: 12, target: 15, trend: '+12%', status: 'Achieved' }
 ];
 
+const STATS_STORAGE_KEY = 'agri-statistics-data';
+
+// Helper to init state from local storage or fallback
+const initStatsFromStorage = <T,>(key: string, fallback: T): T => {
+  try {
+    const stored = localStorage.getItem(STATS_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed[key] !== undefined) {
+        return parsed[key];
+      }
+    }
+  } catch (e) {
+    console.error('Error reading stats data from local storage', e);
+  }
+  return fallback;
+};
+
 export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [yieldData, setYieldData] = useState<YieldData[]>(initialYieldData);
-  const [financialData, setFinancialData] = useState({
+  const [yieldData, setYieldData] = useState<YieldData[]>(() => initStatsFromStorage('yieldData', initialYieldData));
+  const [financialData, setFinancialData] = useState(() => initStatsFromStorage('financialData', {
     profitabilityByParcel: initialProfitabilityData,
     costAnalysis: initialCostData,
     revenueByMonth: initialRevenueData
-  });
-  const [environmentalData, setEnvironmentalData] = useState({
+  }));
+  const [environmentalData, setEnvironmentalData] = useState(() => initStatsFromStorage('environmentalData', {
     indicators: initialEnvironmentalIndicators,
     carbonFootprint: -15,
     waterUsage: -8,
     biodiversity: 12
-  });
-  const [forecastData, setForecastData] = useState(initialRevenueData);
+  }));
+  const [forecastData, setForecastData] = useState(() => initStatsFromStorage('forecastData', initialRevenueData));
   const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('year');
   const [cropFilter, setCropFilter] = useState('all');
-  
+
+  // Save changes to local storage
+  useEffect(() => {
+    try {
+      const dataToSave = {
+        yieldData,
+        financialData,
+        environmentalData,
+        forecastData
+      };
+      localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error('Failed to save stats data', e);
+    }
+  }, [yieldData, financialData, environmentalData, forecastData]);
+
   // Function to update data based on filters
   const updateDataWithFilters = (period: string, crop: string) => {
     // Filter yield data by crop if necessary
     if (crop !== 'all') {
       const filteredYieldData = initialYieldData.filter(item => item.name === crop);
       setYieldData(filteredYieldData);
-      
+
       // Also filter financial data by crop
       const filteredProfitabilityData = initialProfitabilityData.filter(item => item.crop === crop);
       setFinancialData(prev => ({
@@ -171,19 +204,19 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         profitabilityByParcel: initialProfitabilityData
       }));
     }
-    
+
     // You could also adjust other data based on the period
   };
-  
+
   // Update data when filters change
   useEffect(() => {
     updateDataWithFilters(period, cropFilter);
   }, [period, cropFilter]);
-  
+
   return (
-    <StatisticsContext.Provider 
-      value={{ 
-        yieldData, 
+    <StatisticsContext.Provider
+      value={{
+        yieldData,
         setYieldData,
         financialData,
         setFinancialData,

@@ -40,9 +40,9 @@ const FinancialTracking = () => {
   // State for editable content
   const [title, setTitle] = useState('Financial Tracking');
   const [description, setDescription] = useState('Manage your income and expenses to optimize your farm profitability');
-  
-  // State for transactions
-  const [transactions, setTransactions] = useState([
+
+  // Initial transactions fallback
+  const initialTransactions = [
     { id: 1, date: '2023-07-05', description: 'Crop sale', amount: 3200, category: 'Sales', type: 'income' },
     { id: 2, date: '2023-07-10', description: 'Fertilizer purchase', amount: 850, category: 'Supplies', type: 'expense' },
     { id: 3, date: '2023-07-12', description: 'Electricity bill', amount: 320, category: 'Utilities', type: 'expense' },
@@ -50,17 +50,54 @@ const FinancialTracking = () => {
     { id: 5, date: '2023-07-20', description: 'Tractor repair', amount: 750, category: 'Maintenance', type: 'expense' },
     { id: 6, date: '2023-07-25', description: 'Agricultural subsidy', amount: 4200, category: 'Subsidies', type: 'income' },
     { id: 7, date: '2023-07-28', description: 'Employee salaries', amount: 2800, category: 'Salaries', type: 'expense' },
-  ]);
-  
+  ];
+
+  const FINANCIAL_STORAGE_KEY = 'agri-financial-data';
+
+  const initFinancialFromStorage = <T,>(key: string, fallback: T): T => {
+    try {
+      const stored = localStorage.getItem(FINANCIAL_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed[key] !== undefined) {
+          return parsed[key];
+        }
+      }
+    } catch (e) {
+      console.error('Error reading financial data from local storage', e);
+    }
+    return fallback;
+  };
+
+  const [transactions, setTransactions] = useState<{
+    id: number;
+    date: string;
+    description: string;
+    amount: number;
+    category: string;
+    type: string;
+  }[]>(() => initFinancialFromStorage('transactions', initialTransactions));
+
+  React.useEffect(() => {
+    try {
+      const dataToSave = {
+        transactions
+      };
+      localStorage.setItem(FINANCIAL_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error('Failed to save financial data', e);
+    }
+  }, [transactions]);
+
   // Filter and stats
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
-  
+
   // Dialog state
   const [showAddDialog, setShowAddDialog] = useState(false);
-  
+
   // Form handling with react-hook-form
   const form = useForm({
     resolver: zodResolver(transactionSchema),
@@ -72,21 +109,21 @@ const FinancialTracking = () => {
       type: "income" as "income" | "expense",
     },
   });
-  
+
   // Categories for filtering
   const categories = ['all', ...new Set(transactions.map(t => t.category))];
-  
+
   // Calculate totals
   const totalIncome = transactions
     .filter(t => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
-    
+
   const totalExpenses = transactions
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
-    
+
   const balance = totalIncome - totalExpenses;
-  
+
   // Filter transactions based on selected filters
   const filteredTransactions = transactions
     .filter(t => {
@@ -96,7 +133,7 @@ const FinancialTracking = () => {
     })
     .sort((a, b) => {
       if (sortBy === 'date') {
-        return sortOrder === 'asc' 
+        return sortOrder === 'asc'
           ? new Date(a.date).getTime() - new Date(b.date).getTime()
           : new Date(b.date).getTime() - new Date(a.date).getTime();
       } else if (sortBy === 'amount') {
@@ -104,7 +141,7 @@ const FinancialTracking = () => {
       }
       return 0;
     });
-  
+
   // Handle form submission
   const onSubmit = (data: z.infer<typeof transactionSchema>) => {
     const newTransaction = {
@@ -115,59 +152,59 @@ const FinancialTracking = () => {
       category: data.category,
       type: data.type
     };
-    
+
     setTransactions([newTransaction, ...transactions]);
     setShowAddDialog(false);
     form.reset();
-    
+
     toast.success('Transaction added successfully');
   };
-  
+
   // Handle delete transaction
   const handleDeleteTransaction = (id: number) => {
     setTransactions(transactions.filter(t => t.id !== id));
     toast.success('Transaction deleted');
   };
-  
+
   // Handle edit transaction
   const handleUpdateTransaction = (id: number, field: string, value: any) => {
-    setTransactions(transactions.map(t => 
+    setTransactions(transactions.map(t =>
       t.id === id ? { ...t, [field]: field === 'amount' ? parseFloat(value) : value } : t
     ));
     toast.success('Transaction updated');
   };
-  
+
   // Export to CSV
   const exportToCSV = () => {
     // Create CSV content
     const headers = ['Date', 'Description', 'Amount', 'Category', 'Type'];
     const rows = transactions.map(t => [
-      t.date, 
-      t.description, 
-      t.amount.toString(), 
-      t.category, 
+      t.date,
+      t.description,
+      t.amount.toString(),
+      t.category,
       t.type === 'income' ? 'Income' : 'Expense'
     ]);
-    
+
     const csvContent = [
       headers.join(','),
       ...rows.map(row => row.join(','))
     ].join('\n');
-    
+
     // Create download link
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `transactions_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute('download', `transactions_${new Date().toISOString().slice(0, 10)}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     toast.success('Data exported to CSV');
   };
-  
+
   // Print transactions
   const printTransactions = () => {
     const printWindow = window.open('', '_blank');
@@ -175,7 +212,7 @@ const FinancialTracking = () => {
       toast.error('Unable to open print window');
       return;
     }
-    
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -227,17 +264,17 @@ const FinancialTracking = () => {
         </body>
       </html>
     `;
-    
+
     printWindow.document.open();
     printWindow.document.write(htmlContent);
     printWindow.document.close();
-    
+
     toast.success('Print prepared');
   };
-  
+
   return (
     <div className="space-y-6">
-      <PageHeader 
+      <PageHeader
         title={title}
         description={description}
         onTitleChange={(value) => {
@@ -249,7 +286,7 @@ const FinancialTracking = () => {
           toast.success('Description updated');
         }}
       />
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-white">
           <CardHeader className="pb-2">
@@ -260,7 +297,7 @@ const FinancialTracking = () => {
             <p className="text-2xl font-bold text-red-600">₹ {totalExpenses.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-white">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">Expenses</CardTitle>
@@ -270,7 +307,7 @@ const FinancialTracking = () => {
             <p className="text-2xl font-bold text-red-600">{totalExpenses.toFixed(2)} ₹</p>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-white">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">Balance</CardTitle>
@@ -283,7 +320,7 @@ const FinancialTracking = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-white">
           <CardHeader>
@@ -299,8 +336,8 @@ const FinancialTracking = () => {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip 
-                    formatter={(value) => [`₹ ${value}`, '']} 
+                  <Tooltip
+                    formatter={(value) => [`₹ ${value}`, '']}
                     labelFormatter={(label) => `Month: ${label}`}
                   />
                   <Bar name="Income" dataKey="income" fill="#4ade80" radius={[4, 4, 0, 0]} />
@@ -310,28 +347,28 @@ const FinancialTracking = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Transactions</CardTitle>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={exportToCSV}
               >
                 <Download className="h-4 w-4 mr-1" />
                 Export
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={printTransactions}
               >
                 <Printer className="h-4 w-4 mr-1" />
                 Print
               </Button>
-              <Button 
+              <Button
                 onClick={() => setShowAddDialog(true)}
                 size="sm"
               >
@@ -351,7 +388,7 @@ const FinancialTracking = () => {
                 <option value="income">Income</option>
                 <option value="expense">Expenses</option>
               </select>
-              
+
               <select
                 className="px-3 py-1 border rounded-md text-sm"
                 value={categoryFilter}
@@ -363,7 +400,7 @@ const FinancialTracking = () => {
                   </option>
                 ))}
               </select>
-              
+
               <select
                 className="px-3 py-1 border rounded-md text-sm ml-auto"
                 value={`${sortBy}-${sortOrder}`}
@@ -379,25 +416,24 @@ const FinancialTracking = () => {
                 <option value="amount-asc">Amount (low)</option>
               </select>
             </div>
-            
+
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
               {filteredTransactions.length > 0 ? (
                 filteredTransactions.map(transaction => (
                   <div key={transaction.id} className="border rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-2">
-                    <div className={`rounded-full h-8 w-8 flex items-center justify-center ${
-                      transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                    }`}>
+                    <div className={`rounded-full h-8 w-8 flex items-center justify-center ${transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                      }`}>
                       <FileText className="h-4 w-4" />
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                         <EditableField
                           value={new Date(transaction.date).toLocaleDateString()}
                           type="date"
                           onSave={(value) => handleUpdateTransaction(
-                            transaction.id, 
-                            'date', 
+                            transaction.id,
+                            'date',
                             typeof value === 'string' ? value : new Date(value).toISOString().split('T')[0]
                           )}
                           className="text-sm font-medium"
@@ -415,15 +451,14 @@ const FinancialTracking = () => {
                         className="text-muted-foreground text-sm mt-1"
                       />
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       <EditableField
                         value={transaction.amount}
                         type="number"
                         onSave={(value) => handleUpdateTransaction(transaction.id, 'amount', value)}
-                        className={`font-semibold ${
-                          transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                        }`}
+                        className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                          }`}
                       />
                       <Button
                         variant="ghost"
@@ -443,14 +478,14 @@ const FinancialTracking = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Add Transaction Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Add Transaction</DialogTitle>
           </DialogHeader>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -482,7 +517,7 @@ const FinancialTracking = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="date"
@@ -502,7 +537,7 @@ const FinancialTracking = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="amount"
@@ -510,18 +545,18 @@ const FinancialTracking = () => {
                     <FormItem>
                       <FormLabel>Amount (₹)</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          placeholder="0.00" 
-                          {...field} 
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="category"
@@ -535,7 +570,7 @@ const FinancialTracking = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="description"
@@ -550,11 +585,11 @@ const FinancialTracking = () => {
                   )}
                 />
               </div>
-              
+
               <DialogFooter>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => setShowAddDialog(false)}
                 >
                   Cancel

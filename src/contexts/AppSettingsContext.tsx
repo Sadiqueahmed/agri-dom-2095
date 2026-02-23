@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AppSettings {
   darkMode: boolean;
@@ -100,10 +100,13 @@ const defaultSettings: AppSettings = {
   }
 };
 
+// Key for localStorage
+const SETTINGS_STORAGE_KEY = 'agri-settings';
+
 const AppSettingsContext = createContext<AppSettingsContextType>({
   settings: defaultSettings,
-  updateSetting: () => {},
-  updateNestedSetting: () => {},
+  updateSetting: () => { },
+  updateNestedSetting: () => { },
 });
 
 // Create a named function declaration for the hook
@@ -119,7 +122,37 @@ interface AppSettingsProviderProps {
 }
 
 export const AppSettingsProvider: React.FC<AppSettingsProviderProps> = ({ children }) => {
-  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+  // Initialize state directly from localStorage to prevent flash of default theme
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    try {
+      const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      if (storedSettings) {
+        // Merge stored settings with default settings to handle any missing keys from updates/migrations
+        return {
+          ...defaultSettings,
+          ...JSON.parse(storedSettings),
+          // Deep merge components where necessary (e.g., nested objects)
+          units: { ...defaultSettings.units, ...JSON.parse(storedSettings).units },
+          weatherApi: { ...defaultSettings.weatherApi, ...JSON.parse(storedSettings).weatherApi },
+          agriculture: { ...defaultSettings.agriculture, ...JSON.parse(storedSettings).agriculture },
+          notifications: { ...defaultSettings.notifications, ...JSON.parse(storedSettings).notifications },
+          dataSync: { ...defaultSettings.dataSync, ...JSON.parse(storedSettings).dataSync }
+        };
+      }
+    } catch (error) {
+      console.error('Failed to load settings from localStorage', error);
+    }
+    return defaultSettings;
+  });
+
+  // Save to localStorage whenever settings change
+  useEffect(() => {
+    try {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    } catch (error) {
+      console.error('Failed to save settings to localStorage', error);
+    }
+  }, [settings]);
 
   const updateSetting = (key: string, value: any) => {
     setSettings(prevSettings => ({
@@ -128,24 +161,18 @@ export const AppSettingsProvider: React.FC<AppSettingsProviderProps> = ({ childr
     }));
   };
 
-  // Fix the updateNestedSetting function with proper typing
-  const updateNestedSetting = (section: string, key: string, value: any) => {
+  const updateNestedSetting = (section: keyof AppSettings, key: string, value: any) => {
     setSettings((prevSettings) => {
-      // Create a copy of the current settings
       const updatedSettings = { ...prevSettings };
-      
-      // Safely handle the nested section
-      const sectionData = updatedSettings[section] as Record<string, any>;
-      
-      // If the section exists, update it
-      if (sectionData) {
-        // Create a new object for the section to avoid direct mutation
+
+      // Ensure the section exists before trying to access it
+      if (updatedSettings[section] && typeof updatedSettings[section] === 'object') {
         updatedSettings[section] = {
-          ...sectionData,
+          ...updatedSettings[section],
           [key]: value
-        };
+        } as any;
       }
-      
+
       return updatedSettings;
     });
   };
