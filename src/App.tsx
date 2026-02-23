@@ -18,7 +18,7 @@ import SignUpPage from "./pages/auth/SignUpPage";
 import LandingPage from "./pages/LandingPage";
 import ProfilePage from "./pages/ProfilePage";
 import { useEffect } from "react";
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { CRMProvider } from "./contexts/CRMContext";
 import { StatisticsProvider } from "./contexts/StatisticsContext";
 import { AppSettingsProvider, useAppSettings } from "./contexts/AppSettingsContext";
@@ -138,7 +138,13 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <AppSettingsProvider>
           <CRMProvider>
-            <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+            <ClerkProvider
+              publishableKey={PUBLISHABLE_KEY}
+              signInUrl="/sign-in"
+              signUpUrl="/sign-up"
+              signInFallbackRedirectUrl="/dashboard"
+              signUpFallbackRedirectUrl="/dashboard"
+            >
               <BrowserRouter>
                 <TooltipProvider>
                   <RouterChangeHandler />
@@ -164,7 +170,7 @@ const App = () => {
                               {route.element}
                             </SignedIn>
                             <SignedOut>
-                              <RedirectToSignIn />
+                              <Navigate to="/sign-in" replace />
                             </SignedOut>
                           </>
                         }
