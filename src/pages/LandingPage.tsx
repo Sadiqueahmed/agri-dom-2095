@@ -20,7 +20,7 @@ export default function LandingPage() {
                             Sign In
                         </Button>
                     </Link>
-                    <Link to="/dashboard">
+                    <Link to="/sign-in">
                         <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 font-semibold rounded-full px-6 transition-all hover:scale-105">
                             Explore Dashboard
                         </Button>
@@ -45,7 +45,7 @@ export default function LandingPage() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mb-20 w-full sm:w-auto">
-                    <Link to="/dashboard" className="w-full sm:w-auto">
+                    <Link to="/sign-in" className="w-full sm:w-auto">
                         <Button size="lg" className="w-full sm:w-auto h-14 bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-bold rounded-full px-8 shadow-xl shadow-emerald-600/30 transition-all hover:translate-y-[-2px]">
                             Explore Dashboard <ArrowRight className="ml-2 h-5 w-5" />
                         </Button>
